@@ -1,0 +1,22 @@
+{
+  "A_NOISE_AREA_MOMENTUM": {
+    "basis": "Zarattini, Aziz & Barbon \u2014 Beat the Market",
+    "fidelity": "high from public algorithm descriptions / independent implementations"
+  },
+  "B_VWAP_FLIP": {
+    "basis": "Zarattini & Aziz \u2014 VWAP: The Holy Grail for Day Trading Systems",
+    "fidelity": "high-level faithful, with added catastrophe stop for prop compatibility"
+  },
+  "C_NOISE_ENTRY_VWAP_EXIT": {
+    "basis": "Noise-area signal + VWAP exit follow-up research",
+    "fidelity": "frozen research variant; not claimed as exact paper reproduction"
+  },
+  "D_VWAP_EXHAUSTION_ADX": {
+    "basis": "VWAP exhaustion + ADX rollover framework",
+    "fidelity": "research reconstruction"
+  },
+  "E_ORB_RETEST_DUAL_VWAP": {
+    "basis": "NQ ORB/retest + dual-VWAP public research implementation",
+    "fidelity": "research reconstruction; public production parameters are incomplete/sanitized"
+  }
+}
