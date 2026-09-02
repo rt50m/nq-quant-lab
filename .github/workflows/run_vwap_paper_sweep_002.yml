@@ -1,0 +1,52 @@
+name: Run VWAP Paper Sweep 002
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'vwap_paper_sweep_002.py'
+      - '.github/workflows/run_vwap_paper_sweep_002.yml'
+  workflow_dispatch:
+
+jobs:
+  paper-sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pandas numpy scipy tabulate
+
+      - name: Fetch public NQ minute-data mirror
+        run: |
+          git clone --depth 1 https://github.com/MeNameek/AnooReplay.git nq_source
+          test -f nq_source/public/data/NQ/dates.json
+
+      - name: Run paper-inspired VWAP research sweep
+        run: |
+          python vwap_paper_sweep_002.py \
+            --data-dir nq_source/public/data/NQ \
+            --out-dir vwap_paper_sweep_002_results
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f vwap_paper_sweep_002_results/summary.md ]; then
+            cat vwap_paper_sweep_002_results/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vwap-paper-sweep-002-results
+          path: vwap_paper_sweep_002_results/
+          if-no-files-found: warn
