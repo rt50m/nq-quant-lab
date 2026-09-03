@@ -1,0 +1,84 @@
+{
+  "suite": "NQ ORB Parallel Suite 011",
+  "exact_total_configs": 55260,
+  "primary_risk_usd": 300,
+  "architecture": {
+    "prepare_jobs": 1,
+    "model_families": 10,
+    "shard_jobs": 62,
+    "model_aggregators": 10,
+    "final_aggregator": 1,
+    "checkpoint_every_configs": 25,
+    "shard_timeout_minutes": 90,
+    "prepared_state_retention_days": 7,
+    "result_retention_days": 30
+  },
+  "models": {
+    "orb01": {
+      "model": "ORB01_MODERN_5M_FORMED",
+      "configs": 1080,
+      "shards": 2,
+      "configs_per_shard_approx": 540.0
+    },
+    "orb02": {
+      "model": "ORB02_VALUE_AREA_FLOW",
+      "configs": 2160,
+      "shards": 3,
+      "configs_per_shard_approx": 720.0
+    },
+    "orb03": {
+      "model": "ORB03_DELAYED_25M",
+      "configs": 2700,
+      "shards": 3,
+      "configs_per_shard_approx": 900.0
+    },
+    "orb04": {
+      "model": "ORB04_TSAI_TORB",
+      "configs": 2700,
+      "shards": 3,
+      "configs_per_shard_approx": 900.0
+    },
+    "orb05": {
+      "model": "ORB05_VOL_STATE",
+      "configs": 6480,
+      "shards": 7,
+      "configs_per_shard_approx": 925.7142857142857
+    },
+    "orb06": {
+      "model": "ORB06_STAT_THRESHOLD",
+      "configs": 9720,
+      "shards": 10,
+      "configs_per_shard_approx": 972.0
+    },
+    "orb07": {
+      "model": "ORB07_GAORB_FULL_GRID",
+      "configs": 4500,
+      "shards": 5,
+      "configs_per_shard_approx": 900.0
+    },
+    "orb08": {
+      "model": "ORB08_NN_THRESHOLD",
+      "configs": 16200,
+      "shards": 18,
+      "configs_per_shard_approx": 900.0
+    },
+    "orb09": {
+      "model": "ORB09_PREDICTED_TR",
+      "configs": 3240,
+      "shards": 4,
+      "configs_per_shard_approx": 810.0
+    },
+    "orb10": {
+      "model": "ORB10_NQ_GAP_STATE",
+      "configs": 6480,
+      "shards": 7,
+      "configs_per_shard_approx": 925.7142857142857
+    }
+  },
+  "notes": [
+    "Same 55,260 finite grid and backtest logic as Suite 010.",
+    "Suite 011 changes compute architecture only: shared preprocessing, parallel deterministic shards, disk checkpoints, per-model progressive artifacts, final merge.",
+    "Each attempted config gets a result row even when it produces no valid trades, enabling exact completion accounting.",
+    "2025 is not pristine OOS because it has already been inspected in this project."
+  ]
+}
