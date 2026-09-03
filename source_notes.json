@@ -1,24 +1,12 @@
 {
-  "A": {
-    "citation": "Baltussen, Da, Lammers & Martens (2021), Hedging demand and market intraday momentum, Journal of Financial Economics 142(1), 377-403.",
-    "doi": "10.1016/j.jfineco.2021.04.029",
-    "implementation": "High mechanism fidelity; sign of NQ rest-of-day return is traded through final RTH half-hour."
-  },
-  "B": {
-    "citation": "Rosa (2022), Understanding intraday momentum strategies, Journal of Futures Markets 42, 2218-2234.",
-    "doi": "10.1002/fut.22375",
-    "implementation": "Threshold mechanism retained; 25/50/75/100 bp overnight thresholds frozen before run because accessible public source does not expose one canonical threshold."
-  },
-  "C": {
-    "citation": "Yu, Rentzler & Wolf (2005), NASDAQ-100 Index Futures: Intraday Momentum or Reversal?, Journal of Investment Management 3(3).",
-    "implementation": "Reconstruction. Uses the published conditioning variables and freezes the first four 30-minute RTH blocks."
-  },
-  "D": {
-    "citation": "Mesfin (2026), Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures, arXiv:2605.04004.",
-    "implementation": "Reconstruction. Public signal conditions are kept; GMM feature map and ATR pullback implementation are approximated causally."
-  },
-  "E": {
-    "citation": "Mesfin (2026), Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures, arXiv:2605.04004.",
-    "implementation": "Reconstruction. Public R0->R2 transition/timing retained; GMM feature map reconstructed causally."
-  }
+  "ORB01_MODERN_5M_FORMED": "Modern formed 5m ORB family; directional opening-range and long-term trend gates. NQ implementation is a research port.",
+  "ORB02_VALUE_AREA_FLOW": "Modern NQ value-area/order-flow ORB working research. Exact MBO delta is not available in the current public OHLCV mirror; the suite labels and tests an OHLCV proxy rather than pretending it is exact.",
+  "ORB03_DELAYED_25M": "Mesfin (2026), Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures. Tests immediate vs delayed ORB-style confirmation on MNQ; suite implements the mechanism family.",
+  "ORB04_TSAI_TORB": "Tsai et al. (2019), Assessing the Profitability of Timely Opening Range Breakout on Index Futures Markets, IEEE Access. Direct E-mini Nasdaq-100 evidence; short probe periods including 1 minute are tested.",
+  "ORB05_VOL_STATE": "Lundstrom (2019), Day Trading Returns Across Volatility States. Refereed ORB research on futures showing strong state dependence; mechanism transferred to NQ.",
+  "ORB06_STAT_THRESHOLD": "Holmberg, Lonnbark & Lundstrom (2013), Assessing the profitability of intraday opening range breakout strategies, Finance Research Letters 10(1):27-33. Statistical/volatility threshold ORB mechanism transferred to NQ.",
+  "ORB07_GAORB_FULL_GRID": "Wu, Syu, Lin & Ho (2021), Evolutionary ORB-based model with protective closing strategies, Knowledge-Based Systems 216:106769. Threshold-adjusted ORB and protective closing. We exhaustively grid the encoded family rather than rely on GA selection.",
+  "ORB08_NN_THRESHOLD": "Chen, Syu & Ho (2020), Neural Network-based ORB Strategies for Threshold Classification on Taiwan Futures Market, IEEE SMC. Neural threshold gate reconstructed on NQ.",
+  "ORB09_PREDICTED_TR": "Wu et al. (2026), Enhancing Opening Range Breakout Strategies with LSTM-Based True Range Prediction, ACIIDS / Springer LNCS. The suite uses a causal gradient-boosting TR forecast surrogate and labels it reconstruction.",
+  "ORB10_NQ_GAP_STATE": "Yu, Rentzler & Wolf (2005), NASDAQ-100 Index Futures: Intraday Momentum or Reversal?, Journal of Investment Management 3(3). Direct NQ prior-day/overnight state evidence used as an ORB gate."
 }

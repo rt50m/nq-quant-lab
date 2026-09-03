@@ -1,0 +1,13 @@
+{
+  "primary_starting_equity": 50000,
+  "primary_risk_per_trade": 300,
+  "risk_grid": [50, 75, 100, 125, 150, 175, 200, 250, 300],
+  "stop_specs": ["OPPOSITE", "MID", "WIDTH_0.5", "WIDTH_1.0", "ATR_1.0", "ATR_1.5"],
+  "target_R": [1.0, 1.5, 2.0, 3.0, null],
+  "time_exits_ET": ["11:30", "13:00", "15:59"],
+  "entry_modes": ["TOUCH", "CLOSE_NEXT_BAR"],
+  "same_bar_ambiguity": "STOP_FIRST",
+  "round_trip_slippage_points": 0.50,
+  "data_period": "late-2022 through 2025 from public NQ 1m mirror",
+  "warning": "2025 is already-seen secondary evidence, not pristine OOS. Model 2 and Models 6/8/9/10 are research reconstructions/proxies as documented."
+}
