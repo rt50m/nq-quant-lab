@@ -1,0 +1,1009 @@
+name: Run NQ ORB Parallel Suite 011
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'nq_orb_parallel_suite_011.py'
+      - 'nq_orb_research_suite_010.py'
+      - '.github/workflows/run_nq_orb_parallel_suite_011.yml'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Fetch NQ one-minute data mirror
+        run: |
+          git clone --depth 1 https://github.com/MeNameek/AnooReplay.git nq_source
+          test -f nq_source/public/data/NQ/dates.json
+      - name: Prepare data, gates, manifest and enhanced causality audit
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode prepare \
+            --data-dir nq_source/public/data/NQ \
+            --out-dir prepared_011
+      - name: Publish causality audit
+        if: always()
+        run: |
+          if [ -f prepared_011/causality_audit_011.json ]; then cat prepared_011/causality_audit_011.json >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload prepared research state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011/
+          if-no-files-found: error
+          retention-days: 7
+
+  orb01:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB01_MODERN_5M_FORMED shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB01_MODERN_5M_FORMED \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 2 \
+            --out-dir shard_orb01_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb01-s${{ matrix.shard }}
+          path: shard_orb01_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb01:
+    needs: orb01
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb01-s*
+          path: parts_orb01
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB01_MODERN_5M_FORMED and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb01 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB01_MODERN_5M_FORMED \
+            --out-dir model_orb01_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb01_complete/model_summary.md ]; then cat model_orb01_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb01-complete
+          path: model_orb01_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb02:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB02_VALUE_AREA_FLOW shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB02_VALUE_AREA_FLOW \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 3 \
+            --out-dir shard_orb02_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb02-s${{ matrix.shard }}
+          path: shard_orb02_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb02:
+    needs: orb02
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb02-s*
+          path: parts_orb02
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB02_VALUE_AREA_FLOW and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb02 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB02_VALUE_AREA_FLOW \
+            --out-dir model_orb02_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb02_complete/model_summary.md ]; then cat model_orb02_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb02-complete
+          path: model_orb02_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb03:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB03_DELAYED_25M shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB03_DELAYED_25M \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 3 \
+            --out-dir shard_orb03_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb03-s${{ matrix.shard }}
+          path: shard_orb03_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb03:
+    needs: orb03
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb03-s*
+          path: parts_orb03
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB03_DELAYED_25M and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb03 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB03_DELAYED_25M \
+            --out-dir model_orb03_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb03_complete/model_summary.md ]; then cat model_orb03_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb03-complete
+          path: model_orb03_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb04:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB04_TSAI_TORB shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB04_TSAI_TORB \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 3 \
+            --out-dir shard_orb04_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb04-s${{ matrix.shard }}
+          path: shard_orb04_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb04:
+    needs: orb04
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb04-s*
+          path: parts_orb04
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB04_TSAI_TORB and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb04 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB04_TSAI_TORB \
+            --out-dir model_orb04_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb04_complete/model_summary.md ]; then cat model_orb04_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb04-complete
+          path: model_orb04_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb05:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB05_VOL_STATE shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB05_VOL_STATE \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 7 \
+            --out-dir shard_orb05_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb05-s${{ matrix.shard }}
+          path: shard_orb05_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb05:
+    needs: orb05
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb05-s*
+          path: parts_orb05
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB05_VOL_STATE and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb05 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB05_VOL_STATE \
+            --out-dir model_orb05_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb05_complete/model_summary.md ]; then cat model_orb05_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb05-complete
+          path: model_orb05_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb06:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB06_STAT_THRESHOLD shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB06_STAT_THRESHOLD \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 10 \
+            --out-dir shard_orb06_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb06-s${{ matrix.shard }}
+          path: shard_orb06_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb06:
+    needs: orb06
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb06-s*
+          path: parts_orb06
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB06_STAT_THRESHOLD and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb06 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB06_STAT_THRESHOLD \
+            --out-dir model_orb06_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb06_complete/model_summary.md ]; then cat model_orb06_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb06-complete
+          path: model_orb06_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb07:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB07_GAORB_FULL_GRID shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB07_GAORB_FULL_GRID \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 5 \
+            --out-dir shard_orb07_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb07-s${{ matrix.shard }}
+          path: shard_orb07_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb07:
+    needs: orb07
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb07-s*
+          path: parts_orb07
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB07_GAORB_FULL_GRID and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb07 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB07_GAORB_FULL_GRID \
+            --out-dir model_orb07_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb07_complete/model_summary.md ]; then cat model_orb07_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb07-complete
+          path: model_orb07_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb08:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB08_NN_THRESHOLD shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB08_NN_THRESHOLD \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 18 \
+            --out-dir shard_orb08_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb08-s${{ matrix.shard }}
+          path: shard_orb08_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb08:
+    needs: orb08
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb08-s*
+          path: parts_orb08
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB08_NN_THRESHOLD and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb08 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB08_NN_THRESHOLD \
+            --out-dir model_orb08_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb08_complete/model_summary.md ]; then cat model_orb08_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb08-complete
+          path: model_orb08_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb09:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB09_PREDICTED_TR shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB09_PREDICTED_TR \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 4 \
+            --out-dir shard_orb09_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb09-s${{ matrix.shard }}
+          path: shard_orb09_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb09:
+    needs: orb09
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb09-s*
+          path: parts_orb09
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB09_PREDICTED_TR and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb09 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB09_PREDICTED_TR \
+            --out-dir model_orb09_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb09_complete/model_summary.md ]; then cat model_orb09_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb09-complete
+          path: model_orb09_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  orb10:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0,1,2,3,4,5,6]
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Run ORB10_NQ_GAP_STATE shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode shard \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB10_NQ_GAP_STATE \
+            --shard-index ${{ matrix.shard }} \
+            --shard-count 7 \
+            --out-dir shard_orb10_${{ matrix.shard }}
+      - name: Upload shard checkpoint/result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-orb10-s${{ matrix.shard }}
+          path: shard_orb10_${{ matrix.shard }}/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_orb10:
+    needs: orb10
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download model shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-orb10-s*
+          path: parts_orb10
+          merge-multiple: true
+      - name: Download prepared state
+        uses: actions/download-artifact@v4
+        with:
+          name: orb011-prepared
+          path: prepared_011
+      - name: Aggregate ORB10_NQ_GAP_STATE and build TradingView-style report
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-model \
+            --parts-dir parts_orb10 \
+            --prepared-path prepared_011/orb011_prepared.joblib \
+            --model ORB10_NQ_GAP_STATE \
+            --out-dir model_orb10_complete
+      - name: Publish model result immediately
+        if: always()
+        run: |
+          if [ -f model_orb10_complete/model_summary.md ]; then cat model_orb10_complete/model_summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload completed model report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orb011-model-orb10-complete
+          path: model_orb10_complete/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
+
+  aggregate_all:
+    needs: [aggregate_orb01, aggregate_orb02, aggregate_orb03, aggregate_orb04, aggregate_orb05, aggregate_orb06, aggregate_orb07, aggregate_orb08, aggregate_orb09, aggregate_orb10]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate joblib
+      - name: Download completed model reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: orb011-model-*-complete
+          path: completed_models
+      - name: Build final ten-model leaderboard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python nq_orb_parallel_suite_011.py \
+            --mode aggregate-all \
+            --models-dir completed_models \
+            --out-dir final_011
+      - name: Publish final leaderboard
+        if: always()
+        run: |
+          if [ -f final_011/summary_011.md ]; then cat final_011/summary_011.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Upload final suite
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-orb-parallel-suite-011-final
+          path: final_011/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 30
