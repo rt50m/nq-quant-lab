@@ -1,0 +1,57 @@
+{
+  "account": "LucidPro 50K reference",
+  "starting_balance": 50000,
+  "profit_target": 3000,
+  "max_loss_limit": 2000,
+  "daily_loss_limit_when_enabled": 1200,
+  "max_nq": 4,
+  "max_mnq": 40,
+  "drawdown": "end-of-day trailing",
+  "trail_balance": 52100,
+  "locked_mll_balance": 50100,
+  "required_flat_time_et": "16:45",
+  "nq_commission_per_side": 1.75,
+  "mnq_commission_per_side": 0.5,
+  "risk_profiles": [
+    {
+      "profile": "VERY_CONSERVATIVE",
+      "risk_per_trade": 50,
+      "personal_daily_stop": 200
+    },
+    {
+      "profile": "CONSERVATIVE",
+      "risk_per_trade": 75,
+      "personal_daily_stop": 300
+    },
+    {
+      "profile": "BALANCED",
+      "risk_per_trade": 100,
+      "personal_daily_stop": 400
+    },
+    {
+      "profile": "BALANCED_PLUS",
+      "risk_per_trade": 125,
+      "personal_daily_stop": 500
+    },
+    {
+      "profile": "AGGRESSIVE",
+      "risk_per_trade": 150,
+      "personal_daily_stop": 600
+    },
+    {
+      "profile": "AGGRESSIVE_PLUS",
+      "risk_per_trade": 175,
+      "personal_daily_stop": 700
+    },
+    {
+      "profile": "HIGH_AGGRESSION",
+      "risk_per_trade": 200,
+      "personal_daily_stop": 800
+    },
+    {
+      "profile": "STRESS_TEST",
+      "risk_per_trade": 250,
+      "personal_daily_stop": 1000
+    }
+  ]
+}

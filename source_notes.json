@@ -1,0 +1,24 @@
+{
+  "A": {
+    "citation": "Baltussen, Da, Lammers & Martens (2021), Hedging demand and market intraday momentum, Journal of Financial Economics 142(1), 377-403.",
+    "doi": "10.1016/j.jfineco.2021.04.029",
+    "implementation": "High mechanism fidelity; sign of NQ rest-of-day return is traded through final RTH half-hour."
+  },
+  "B": {
+    "citation": "Rosa (2022), Understanding intraday momentum strategies, Journal of Futures Markets 42, 2218-2234.",
+    "doi": "10.1002/fut.22375",
+    "implementation": "Threshold mechanism retained; 25/50/75/100 bp overnight thresholds frozen before run because accessible public source does not expose one canonical threshold."
+  },
+  "C": {
+    "citation": "Yu, Rentzler & Wolf (2005), NASDAQ-100 Index Futures: Intraday Momentum or Reversal?, Journal of Investment Management 3(3).",
+    "implementation": "Reconstruction. Uses the published conditioning variables and freezes the first four 30-minute RTH blocks."
+  },
+  "D": {
+    "citation": "Mesfin (2026), Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures, arXiv:2605.04004.",
+    "implementation": "Reconstruction. Public signal conditions are kept; GMM feature map and ATR pullback implementation are approximated causally."
+  },
+  "E": {
+    "citation": "Mesfin (2026), Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures, arXiv:2605.04004.",
+    "implementation": "Reconstruction. Public R0->R2 transition/timing retained; GMM feature map reconstructed causally."
+  }
+}
