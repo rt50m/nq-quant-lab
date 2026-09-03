@@ -1,0 +1,52 @@
+name: Run NQ Institutional Paper Suite 003
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'nq_institutional_paper_suite_003.py'
+      - '.github/workflows/run_nq_institutional_suite_003.yml'
+  workflow_dispatch:
+
+jobs:
+  institutional-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pandas numpy scikit-learn tabulate
+
+      - name: Fetch public NQ minute-data mirror
+        run: |
+          git clone --depth 1 https://github.com/MeNameek/AnooReplay.git nq_source
+          test -f nq_source/public/data/NQ/dates.json
+
+      - name: Run Institutional Paper Suite 003
+        run: |
+          python nq_institutional_paper_suite_003.py \
+            --data-dir nq_source/public/data/NQ \
+            --out-dir institutional_suite_003_results
+
+      - name: Publish research summary
+        if: always()
+        run: |
+          if [ -f institutional_suite_003_results/summary.md ]; then
+            cat institutional_suite_003_results/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload all research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-institutional-suite-003-results
+          path: institutional_suite_003_results/
+          if-no-files-found: warn
