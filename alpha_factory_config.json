@@ -1,0 +1,27 @@
+{
+  "name": "NQ Alpha Factory 001",
+  "seed": 20260903,
+  "horizons_minutes": [5, 15, 30, 60],
+  "random_rules": 220000,
+  "evolution_population": 3000,
+  "evolution_generations": 16,
+  "full_recheck": 3500,
+  "bootstrap_top": 120,
+  "execution_top": 60,
+  "cost_stress_points": [0.5, 1.0, 2.0, 3.0],
+  "validation": {
+    "2023": "discovery/search",
+    "2024": "validation/model selection",
+    "2025": "already-seen secondary evidence"
+  },
+  "risk_profiles": [
+    {"risk": 50, "daily_stop": 200},
+    {"risk": 75, "daily_stop": 300},
+    {"risk": 100, "daily_stop": 400},
+    {"risk": 125, "daily_stop": 500},
+    {"risk": 150, "daily_stop": 600},
+    {"risk": 175, "daily_stop": 700},
+    {"risk": 200, "daily_stop": 800},
+    {"risk": 250, "daily_stop": 1000}
+  ]
+}
