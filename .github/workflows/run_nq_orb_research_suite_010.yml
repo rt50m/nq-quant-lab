@@ -1,0 +1,52 @@
+name: Run NQ ORB Research Suite 010
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'nq_orb_research_suite_010.py'
+      - '.github/workflows/run_nq_orb_research_suite_010.yml'
+  workflow_dispatch:
+
+jobs:
+  orb-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout quant lab
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install research stack
+        run: pip install pandas numpy scikit-learn tabulate
+
+      - name: Fetch NQ one-minute data mirror
+        run: |
+          git clone --depth 1 https://github.com/MeNameek/AnooReplay.git nq_source
+          test -f nq_source/public/data/NQ/dates.json
+
+      - name: Run all ten ORB models and exhaustive finite grids
+        run: |
+          python nq_orb_research_suite_010.py \
+            --data-dir nq_source/public/data/NQ \
+            --out-dir orb_suite_010_results
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f orb_suite_010_results/summary.md ]; then
+            cat orb_suite_010_results/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nq-orb-research-suite-010-results
+          path: orb_suite_010_results/
+          if-no-files-found: warn
