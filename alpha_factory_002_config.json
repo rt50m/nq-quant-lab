@@ -1,0 +1,57 @@
+{
+  "name": "NQ Alpha Factory 002",
+  "seed": 20260904,
+  "invalidates": "Alpha Factory 001",
+  "random_rules": 300000,
+  "evolution_population": 4000,
+  "evolution_generations": 18,
+  "validation": {
+    "2023": "discovery",
+    "2024H1": "selection gate",
+    "2024H2": "locked validation",
+    "2025": "seen secondary only"
+  },
+  "causality_gates": [
+    "future mutation invariance",
+    "RTH open availability",
+    "ORB availability",
+    "VWAP NaN semantics",
+    "exact horizon timestamp",
+    "same-date label",
+    "pre-16:45 label"
+  ],
+  "risk_profiles": [
+    [
+      50,
+      200
+    ],
+    [
+      75,
+      300
+    ],
+    [
+      100,
+      400
+    ],
+    [
+      125,
+      500
+    ],
+    [
+      150,
+      600
+    ],
+    [
+      175,
+      700
+    ],
+    [
+      200,
+      800
+    ],
+    [
+      250,
+      1000
+    ]
+  ]
+}
