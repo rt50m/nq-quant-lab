@@ -2,7 +2,27 @@
 
 Research repository for systematic NQ futures strategy discovery, stress testing, and prop-firm-compatible model development.
 
-**Current focus: Research #2 — five ORB and five non-ORB hypotheses, plus a plain-ORB control.**
+**Current focus: Research #3 — ten NQ-only edge hypotheses (one ORB, nine non-ORB).**
+
+Research #3 is prepared for a manually launched **14,229-configuration** development study.
+Read the [Research #3 run guide](research3/README.md), [ten-model rationale](research3/RESEARCH_PLAN.md)
+and [37-source literature register](research3/SOURCES.md).
+
+## Start Research #3 on GitHub
+
+1. Open **Actions → Research 003 - NQ edge discovery → Run workflow**.
+2. Select branch **main** and check **Run all ten models and automatic analysis after verification**.
+3. Leave the previous run ID blank for a first run, then click **Run workflow**.
+
+GitHub verifies the engine, runs all 32 shards, and builds the all-ten breakdown, best
+historical-profit and qualifying prop variants, chronological selection and execution
+stresses. Download **r3-results** when the aggregate job reports **14,229 / 14,229**.
+Your laptop and Codex can be closed. No AI API or Codex monitoring runs inside the workflow.
+Results retain for 90 days and checkpoints for 30; the [run guide](research3/README.md)
+explains runner time limits and recovery. This remains previously examined development
+history, not a pristine holdout or live-trading approval.
+
+**Research #2 — completed historical study.**
 
 **Research #2 grid completed: 568,296 / 568,296.** Read the
 [completion audit and provisional candidates](research2/RESULTS_2026-09-04.md).
