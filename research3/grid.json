@@ -1,0 +1,771 @@
+{
+  "source_commit": "2628f7ac1da4e83591391889db426208a2985556",
+  "development_start": "2023-01-01",
+  "development_end": "2025-12-11",
+  "costs": {
+    "slippage_per_side_points": 0.25,
+    "nq_commission_per_side": 1.75,
+    "mnq_commission_per_side": 0.5
+  },
+  "account": {
+    "name": "LucidPro 50K evaluation reference, DLL ON",
+    "verified_date": "2026-09-04",
+    "start": 50000,
+    "max_loss": 2000,
+    "locked_floor": 50100,
+    "daily_loss": 1200,
+    "personal_daily_stop": 1000,
+    "max_nq": 4,
+    "max_mnq": 40,
+    "firm_flat_minute": 1005,
+    "research_flat_minute": 959,
+    "account_buffer": 25,
+    "scope": "Trading risk controls only; no evaluation pass/payout or funded LucidScale claims"
+  },
+  "risk_budgets": [
+    50,
+    75,
+    100,
+    125,
+    150,
+    175,
+    200,
+    250,
+    300
+  ],
+  "version": "R3-v1",
+  "protective_stop_atr": [
+    0.1,
+    0.2
+  ],
+  "checkpoint_seconds": 900,
+  "shards": 32,
+  "minimum_event_days": 80,
+  "minimum_evaluation_days": 126,
+  "monthly_refit_sessions": 21,
+  "models": {
+    "M01": {
+      "spacing": [
+        15,
+        30,
+        60
+      ],
+      "lookback": [
+        20,
+        60
+      ],
+      "threshold": [
+        0.1,
+        0.25,
+        0.5
+      ],
+      "strength": [
+        false,
+        true
+      ],
+      "exit_ratio": [
+        0,
+        0.5
+      ]
+    },
+    "M02": {
+      "history": [
+        126,
+        252
+      ],
+      "horizon": [
+        60,
+        120,
+        210
+      ],
+      "interaction": [
+        false,
+        true
+      ],
+      "ridge": [
+        0.1,
+        1.0
+      ],
+      "gate": [
+        0,
+        0.25
+      ]
+    },
+    "M03": {
+      "history": [
+        126,
+        252
+      ],
+      "method": [
+        "sign",
+        "linear"
+      ],
+      "quantile": [
+        0,
+        0.5,
+        0.75
+      ]
+    },
+    "M04": {
+      "history": [
+        252,
+        0
+      ],
+      "states": [
+        1,
+        2
+      ],
+      "gate": [
+        0,
+        0.25
+      ]
+    },
+    "M05": {
+      "lookback": [
+        14,
+        28,
+        60
+      ],
+      "multiplier": [
+        0.75,
+        1,
+        1.25,
+        1.5
+      ],
+      "spacing": [
+        15,
+        30
+      ],
+      "max_entries": [
+        1,
+        3
+      ],
+      "vwap_exit": [
+        false,
+        true
+      ]
+    },
+    "M06": {
+      "spacing": [
+        5,
+        15
+      ],
+      "buffer": [
+        0,
+        0.01,
+        0.025
+      ],
+      "exit_ratio": [
+        0,
+        0.5
+      ],
+      "max_entries": [
+        1,
+        3
+      ]
+    },
+    "M07": {
+      "sampling": [
+        1,
+        5
+      ],
+      "threshold": [
+        2.326347874,
+        3.090232306
+      ],
+      "wait": [
+        1,
+        5
+      ],
+      "hold": [
+        30,
+        60,
+        120
+      ],
+      "closure": [
+        0.5,
+        1
+      ]
+    },
+    "M08": {
+      "opening": [
+        5,
+        15,
+        30
+      ],
+      "deadline": [
+        5,
+        15,
+        30
+      ],
+      "target_r": [
+        1.5,
+        2,
+        3
+      ],
+      "excursion": [
+        1,
+        2
+      ],
+      "tolerance": [
+        0,
+        0.25
+      ],
+      "stop_type": [
+        "boundary",
+        "retest"
+      ]
+    },
+    "M09": {
+      "window": [
+        30,
+        60,
+        120
+      ],
+      "bounces": [
+        1,
+        2,
+        3
+      ],
+      "age": [
+        60,
+        120,
+        240
+      ],
+      "hold": [
+        15,
+        30,
+        60
+      ],
+      "width": [
+        0.05,
+        0.1
+      ]
+    },
+    "M10": {
+      "history": [
+        20,
+        40,
+        60
+      ],
+      "decay": [
+        false,
+        true
+      ],
+      "gate": [
+        0,
+        0.25
+      ],
+      "slot": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330,
+        360
+      ]
+    }
+  },
+  "controls": {
+    "M01": [
+      {
+        "spacing": 30,
+        "lookback": 20,
+        "threshold": 0.25,
+        "strength": false,
+        "exit_ratio": 0,
+        "kind": "long"
+      }
+    ],
+    "M02": [
+      {
+        "history": 126,
+        "horizon": 60,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "intercept"
+      },
+      {
+        "history": 126,
+        "horizon": 60,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "gap_sign"
+      },
+      {
+        "history": 126,
+        "horizon": 120,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "intercept"
+      },
+      {
+        "history": 126,
+        "horizon": 120,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "gap_sign"
+      },
+      {
+        "history": 126,
+        "horizon": 210,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "intercept"
+      },
+      {
+        "history": 126,
+        "horizon": 210,
+        "interaction": false,
+        "ridge": 1.0,
+        "gate": 0,
+        "kind": "gap_sign"
+      }
+    ],
+    "M03": [
+      {
+        "history": 126,
+        "method": "sign",
+        "quantile": 0,
+        "kind": "long"
+      },
+      {
+        "history": 126,
+        "method": "sign",
+        "quantile": 0,
+        "kind": "late_momentum"
+      },
+      {
+        "history": 126,
+        "method": "sign",
+        "quantile": 0,
+        "kind": "opening_only"
+      },
+      {
+        "history": 126,
+        "method": "sign",
+        "quantile": 0,
+        "kind": "gap_only"
+      }
+    ],
+    "M04": [
+      {
+        "history": 252,
+        "states": 1,
+        "gate": 0,
+        "kind": "gap_sign"
+      }
+    ],
+    "M05": [
+      {
+        "lookback": 14,
+        "multiplier": 1,
+        "spacing": 30,
+        "max_entries": 1,
+        "vwap_exit": false,
+        "kind": "fixed_exit"
+      }
+    ],
+    "M06": [
+      {
+        "spacing": 15,
+        "buffer": 0,
+        "exit_ratio": 0,
+        "max_entries": 1,
+        "kind": "long"
+      }
+    ],
+    "M07": [
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 30,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 30,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 60,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 60,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 120,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 1,
+        "hold": 120,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 30,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 30,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 60,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 60,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 120,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 2.326347874,
+        "wait": 5,
+        "hold": 120,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 30,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 30,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 60,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 60,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 120,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 1,
+        "hold": 120,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 30,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 30,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 60,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 60,
+        "closure": 1,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 120,
+        "closure": 0.5,
+        "kind": "matched_gap"
+      },
+      {
+        "sampling": 1,
+        "threshold": 3.090232306,
+        "wait": 5,
+        "hold": 120,
+        "closure": 1,
+        "kind": "matched_gap"
+      }
+    ],
+    "M08": [
+      {
+        "opening": 5,
+        "deadline": 15,
+        "target_r": 1.5,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 5,
+        "deadline": 15,
+        "target_r": 2,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 5,
+        "deadline": 15,
+        "target_r": 3,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 15,
+        "deadline": 15,
+        "target_r": 1.5,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 15,
+        "deadline": 15,
+        "target_r": 2,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 15,
+        "deadline": 15,
+        "target_r": 3,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 30,
+        "deadline": 15,
+        "target_r": 1.5,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 30,
+        "deadline": 15,
+        "target_r": 2,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      },
+      {
+        "opening": 30,
+        "deadline": 15,
+        "target_r": 3,
+        "excursion": 2,
+        "tolerance": 0,
+        "stop_type": "boundary",
+        "kind": "immediate"
+      }
+    ],
+    "M09": [
+      {
+        "window": 60,
+        "bounces": 1,
+        "age": 240,
+        "hold": 30,
+        "width": 0.05,
+        "kind": "no_age_count"
+      }
+    ],
+    "M10": [
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 0,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 30,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 60,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 90,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 120,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 150,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 180,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 210,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 240,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 270,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 300,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 330,
+        "kind": "static_clock"
+      },
+      {
+        "history": 60,
+        "decay": false,
+        "gate": 0,
+        "slot": 360,
+        "kind": "static_clock"
+      }
+    ]
+  }
+}

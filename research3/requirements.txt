@@ -1,0 +1,13 @@
+numpy==2.2.6
+pandas==2.2.3
+numba==0.61.2
+pandas_market_calendars==5.1.1
+tzdata==2025.2
+exchange-calendars==4.13.2
+llvmlite==0.44.0
+python-dateutil==2.9.0.post0
+pytz==2026.3.post1
+pyluach==2.3.0
+toolz==1.1.0
+korean_lunar_calendar==0.4.0
+six==1.17.0
