@@ -1,0 +1,2755 @@
+{
+  "source_commit": "2628f7ac1da4e83591391889db426208a2985556",
+  "development_start": "2023-01-01",
+  "development_end": "2025-12-11",
+  "costs": {
+    "slippage_per_side_points": 0.25,
+    "nq_commission_per_side": 1.75,
+    "mnq_commission_per_side": 0.5
+  },
+  "account": {
+    "name": "LucidPro 50K evaluation reference, DLL ON",
+    "verified_date": "2026-09-04",
+    "start": 50000,
+    "max_loss": 2000,
+    "locked_floor": 50100,
+    "daily_loss": 1200,
+    "personal_daily_stop": 1000,
+    "max_nq": 4,
+    "max_mnq": 40,
+    "firm_flat_minute": 1005,
+    "research_flat_minute": 959,
+    "account_buffer": 25,
+    "scope": "Trading risk controls only; no evaluation pass/payout or funded LucidScale claims"
+  },
+  "minimum_event_days": 80,
+  "version": "R4-draft-1",
+  "status": "PREPARATION_ONLY",
+  "models": [
+    {
+      "id": "R4-01",
+      "name": "Inside-day compression ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "narrow": [
+            4,
+            7
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-02",
+      "name": "Opening and overnight range clearance",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "separation": [
+            0.5,
+            1,
+            2
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": true
+    },
+    {
+      "id": "R4-03",
+      "name": "Acceptance outside the previous day's range",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-04",
+      "name": "Volume-clock opening range",
+      "blocks": [
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "quota": [
+            0.75,
+            1,
+            1.25
+          ],
+          "history": [
+            20,
+            40
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-05",
+      "name": "Opening path efficiency ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "efficiency": [
+            0.4,
+            0.6,
+            0.8
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-06",
+      "name": "Repeated pressure at the opening boundary",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "visits": [
+            2,
+            3
+          ],
+          "band": [
+            0.1,
+            0.2
+          ],
+          "away": [
+            0.2,
+            0.3
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-07",
+      "name": "Failed first side, opposite ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "expiry": [
+            15,
+            30,
+            60
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-08",
+      "name": "Second attempt after a failed breakout",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "depth": [
+            0.1,
+            0.25
+          ],
+          "hold": [
+            2,
+            3
+          ],
+          "expiry": [
+            15,
+            30,
+            60
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-09",
+      "name": "Flag continuation entirely beyond the opening range",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "impulse": [
+            0.25,
+            0.5
+          ],
+          "box_bars": [
+            3,
+            5
+          ],
+          "box_width": [
+            0.25,
+            0.5
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-10",
+      "name": "ORB with a progress-dependent exit",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "progress_minutes": [
+            5,
+            10,
+            15
+          ],
+          "progress_r": [
+            0.25,
+            0.5
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-11",
+      "name": "ORB with VWAP slope alignment",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "slope_bars": [
+            3,
+            5,
+            10
+          ],
+          "slope_atr": [
+            0.001,
+            0.003,
+            0.005
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-12",
+      "name": "VWAP reclaim before ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "hold": [
+            2,
+            3
+          ],
+          "expiry": [
+            10,
+            20,
+            30
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-13",
+      "name": "ORB with a VWAP trailing exit",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "vwap_offset": [
+            0,
+            0.025,
+            0.05
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-14",
+      "name": "Overnight and cash VWAP alignment ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "vwap_gap": [
+            0.001,
+            0.005,
+            0.01
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": true
+    },
+    {
+      "id": "R4-15",
+      "name": "Resting pullback-limit ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "limit_depth": [
+            0,
+            0.1,
+            0.2
+          ],
+          "limit_life": [
+            3,
+            5,
+            10
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-16",
+      "name": "Nested opening-range expansion",
+      "blocks": [
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "nested": [
+            [
+              5,
+              15
+            ],
+            [
+              5,
+              30
+            ],
+            [
+              15,
+              30
+            ]
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-17",
+      "name": "Failed ORB fade toward the midpoint",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "expiry": [
+            3,
+            5,
+            10
+          ],
+          "depth": [
+            0.1,
+            0.25
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-18",
+      "name": "ORB with a chandelier trailing stop",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "atr_bars": [
+            5,
+            10,
+            20
+          ],
+          "chandelier": [
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-19",
+      "name": "ORB with partial profit and a runner",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "partial": [
+            0.3333333333333333,
+            0.5
+          ],
+          "partial_r": [
+            1,
+            1.5,
+            2
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-20",
+      "name": "ORB with conditional additions",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "initial_fraction": [
+            0.5,
+            0.6666666666666666
+          ],
+          "additions": [
+            1,
+            2
+          ],
+          "add_r": [
+            0.5,
+            1
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-21",
+      "name": "Causal triangle-compression ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "smooth": [
+            3,
+            5
+          ],
+          "pivot_delay": [
+            1,
+            2
+          ],
+          "contraction": [
+            0.1,
+            0.25
+          ],
+          "expiry": [
+            10,
+            20
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-22",
+      "name": "Sequential drift-evidence ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "history": [
+            40,
+            60
+          ],
+          "drift": [
+            0.25,
+            0.5
+          ],
+          "alarm_quantile": [
+            0.9,
+            0.95
+          ],
+          "expiry": [
+            5,
+            10
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-23",
+      "name": "Return-volume interaction ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "volume_history": [
+            20,
+            40
+          ],
+          "training": [
+            126,
+            252
+          ],
+          "horizon": [
+            30,
+            60
+          ],
+          "ridge": [
+            0.1,
+            1
+          ],
+          "interaction_atr": [
+            0.005,
+            0.01
+          ],
+          "cost_multiple": [
+            1,
+            2
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-24",
+      "name": "Jump-shock recovery ORB",
+      "blocks": [
+        {
+          "opening": [
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "jump_high": [
+            0.75,
+            0.9
+          ],
+          "rebuild": [
+            10,
+            15,
+            20
+          ],
+          "jump_low": [
+            0.25,
+            0.5
+          ],
+          "expiry": [
+            30,
+            60
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-25",
+      "name": "Adverse-semivariance reduction ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "observe": [
+            5,
+            10,
+            20
+          ],
+          "adverse_share": [
+            0.6,
+            0.75
+          ],
+          "magnitude_quantile": [
+            0.75,
+            0.9
+          ],
+          "partial": [
+            0.3333333333333333,
+            0.5
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-26",
+      "name": "Bayesian regime-break exit ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "hazard": [
+            0.016666666666666666,
+            0.008333333333333333
+          ],
+          "recent_run": [
+            3,
+            5
+          ],
+          "posterior": [
+            0.5,
+            0.7
+          ],
+          "minimum_observations": [
+            5,
+            10
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-27",
+      "name": "Serial-dependence transition ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "block": [
+            20,
+            30
+          ],
+          "lag": [
+            2,
+            3
+          ],
+          "score": [
+            0.5,
+            1
+          ],
+          "expiry": [
+            10,
+            20
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-28",
+      "name": "Two-scale directional-change ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "small_atr": [
+            0.025,
+            0.05
+          ],
+          "scale_ratio": [
+            2,
+            3
+          ],
+          "expiry": [
+            15,
+            30
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-29",
+      "name": "Unexpected price-impact ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "history": [
+            40,
+            60
+          ],
+          "residual_z": [
+            0.5,
+            1
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-30",
+      "name": "Estimated-friction ORB",
+      "blocks": [
+        {
+          "opening": [
+            5,
+            15,
+            30
+          ],
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "stop_atr": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "target_r": [
+            1,
+            1.5,
+            3,
+            0
+          ],
+          "flat": [
+            690,
+            780,
+            959
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "history": [
+            40,
+            60
+          ],
+          "spread_quantile": [
+            0.5,
+            0.75
+          ],
+          "spread_width": [
+            0.025,
+            0.05
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    },
+    {
+      "id": "R4-31",
+      "name": "Inside-range high/low targets",
+      "blocks": [
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "A"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "edge": [
+            0.15,
+            0.25,
+            0.35
+          ],
+          "lookback": [
+            1,
+            2
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "B"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "hold": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "C"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "hold": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "D"
+          ],
+          "min_gap": [
+            1,
+            2,
+            4
+          ],
+          "max_age": [
+            3,
+            5,
+            10
+          ],
+          "formation": [
+            "opening",
+            "post_opening"
+          ],
+          "schedule": [
+            "inversion"
+          ],
+          "displacement": [
+            false
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "D"
+          ],
+          "min_gap": [
+            1,
+            2,
+            4
+          ],
+          "max_age": [
+            3,
+            5,
+            10
+          ],
+          "formation": [
+            "opening",
+            "post_opening"
+          ],
+          "schedule": [
+            "inversion"
+          ],
+          "displacement": [
+            true
+          ],
+          "body_multiple": [
+            1.5,
+            2,
+            2.5
+          ],
+          "body_fraction": [
+            0.6,
+            0.75
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "D"
+          ],
+          "min_gap": [
+            1,
+            2,
+            4
+          ],
+          "max_age": [
+            3,
+            5,
+            10
+          ],
+          "formation": [
+            "opening",
+            "post_opening"
+          ],
+          "schedule": [
+            "retest"
+          ],
+          "displacement": [
+            false
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "D"
+          ],
+          "min_gap": [
+            1,
+            2,
+            4
+          ],
+          "max_age": [
+            3,
+            5,
+            10
+          ],
+          "formation": [
+            "opening",
+            "post_opening"
+          ],
+          "schedule": [
+            "retest"
+          ],
+          "displacement": [
+            true
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "body_multiple": [
+            1.5,
+            2,
+            2.5
+          ],
+          "body_fraction": [
+            0.6,
+            0.75
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "E"
+          ],
+          "body_multiple": [
+            1.5,
+            2,
+            2.5
+          ],
+          "body_fraction": [
+            0.6,
+            0.75
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "F"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "min_gap": [
+            1,
+            2,
+            4
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "G"
+          ],
+          "excursion_ticks": [
+            1,
+            2,
+            4
+          ],
+          "schedule": [
+            "immediate"
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "G"
+          ],
+          "excursion_ticks": [
+            1,
+            2,
+            4
+          ],
+          "schedule": [
+            "confirmed"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "H"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "edge": [
+            0.15,
+            0.25,
+            0.35
+          ],
+          "separation": [
+            0.1,
+            0.2
+          ],
+          "tolerance": [
+            0.025,
+            0.05
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "I"
+          ],
+          "expiry": [
+            5,
+            10,
+            20
+          ],
+          "hold": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "direction": [
+            0,
+            1,
+            -1
+          ],
+          "location": [
+            "origin",
+            "interior",
+            "destination"
+          ],
+          "min_rr": [
+            1,
+            1.5,
+            2
+          ],
+          "cutoff": [
+            630,
+            690,
+            780
+          ],
+          "max_hold": [
+            30,
+            60,
+            120
+          ],
+          "stop_buffer": [
+            1,
+            2
+          ],
+          "risk": [
+            50,
+            75,
+            100,
+            125,
+            150,
+            175,
+            200,
+            250,
+            300
+          ],
+          "family": [
+            "J"
+          ],
+          "box_bars": [
+            3,
+            5,
+            8
+          ],
+          "box_width": [
+            0.1,
+            0.2,
+            0.3
+          ]
+        }
+      ],
+      "implementation": "PENDING",
+      "requires_overnight": false
+    }
+  ],
+  "scope": "Every compatible product of the declared menus; not yet a validated executable registry",
+  "fixed": {
+    "tick": 0.25,
+    "flat": 959,
+    "atr_daily_window": 14,
+    "history_minimum": 80,
+    "entry_schedule": "next_minute_open_except_R4_15_resting_limit",
+    "calendar": "NYSE normal cash sessions only",
+    "new_benchmarks": false
+  }
+}
