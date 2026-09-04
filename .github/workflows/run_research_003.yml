@@ -1,0 +1,230 @@
+name: Research 003 - NQ edge discovery
+
+on:
+  push:
+    branches: [main, codex/research3]
+    paths: ['research3/**', '.github/workflows/run_research_003.yml']
+  workflow_dispatch:
+    inputs:
+      full_search:
+        description: Run all ten models and automatic analysis after verification
+        type: boolean
+        default: false
+      resume_run_id:
+        description: Optional previous Research 003 run ID with matching code and data
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: research003-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research3/requirements.txt
+      - run: pip install -r research3/requirements.txt
+      - name: Execution, causality and checkpoint tests
+        run: python -m unittest discover -s research3 -p 'test_*.py' -v
+      - name: Download frozen public NQ data anonymously
+        run: python research3/run.py download --out data_r3
+      - name: Verify raw hashes and freeze configuration manifest
+        run: python research3/run.py prepare --data data_r3 --out prepared_r3
+      - name: Execute every model before allowing the full search
+        run: python research3/run.py smoke --prepared prepared_r3 --out smoke_r3
+      - name: Publish verification summary
+        if: always()
+        run: |
+          if [ -f smoke_r3/summary.md ]; then cat smoke_r3/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f prepared_r3/manifest_summary.json ]; then cat prepared_r3/manifest_summary.json >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r3-verification
+          path: smoke_r3/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r3-prepared
+          path: prepared_r3/
+          retention-days: 30
+
+  search:
+    needs: verify
+    if: github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research3/requirements.txt
+      - run: pip install -r research3/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: r3-prepared
+          path: prepared_r3
+      - name: Restore prior matching checkpoint
+        if: inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.resume_run_id }}
+      - name: Search checkpoint window 1 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 1
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Search checkpoint window 2 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 2
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Search checkpoint window 3 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 3
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Search checkpoint window 4 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 4
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Search checkpoint window 5 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 5
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Search checkpoint window 6 of 6
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research3/run.py shard --prepared prepared_r3 --out checkpoint --index ${{ matrix.shard }} --count 32 --seconds 2400
+          result=$?
+          if [ "$result" -ne 0 ] && [ "$result" -ne 2 ]; then exit "$result"; fi
+      - name: Save completed groups after window 6
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Require this shard to be complete
+        run: |
+          python -c "import json; s=json.load(open('checkpoint/status.json')); assert s['complete'], 'Partial checkpoint saved; resume this run ID'"
+
+  aggregate:
+    needs: [verify, search]
+    if: always() && needs.verify.result == 'success' && github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r research3/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: r3-prepared
+          path: prepared_r3
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: r3-shard-*
+          path: parts_r3
+      - name: Check exact coverage and produce all-ten breakdown and robustness
+        run: python research3/run.py aggregate --prepared prepared_r3 --parts parts_r3 --out results_r3
+      - name: Publish final or incomplete summary
+        if: always()
+        run: |
+          if [ -f results_r3/summary.md ]; then cat results_r3/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r3-results
+          path: results_r3/
+          retention-days: 90
+          if-no-files-found: error
