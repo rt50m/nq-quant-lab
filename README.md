@@ -1,24 +1,27 @@
 # NQ Quant Lab
 
-## Model 001 — VWAP Pullback Continuation
+Research repository for systematic NQ futures strategy discovery, stress testing, and prop-firm-compatible model development.
 
-Baseline research specification:
+**Current focus: Research #1 — exhaustive 10-family Opening Range Breakout screen.**
 
-- NQ 1-minute bars
-- VWAP source: HLC3
-- Primary Session VWAP reset: 18:00 America/New_York (CME Globex session)
-- Trend acceptance: at least 8 of last 10 closes on trade side of VWAP
-- Pullback: literal touch of VWAP
-- Invalidate: 2 consecutive closes on opposite side before confirmation
-- Displacement: directional candle, body >= 60% of total range, close in outer 25%, breaks previous bar high/low, closes back on trend side of VWAP
-- Confirmation must occur after the touch bar
-- Entry: next 1-minute bar open
-- Stop: pullback extreme +/- one NQ tick (0.25)
-- Target: 1R
-- One position at a time
-- Conservative same-minute ambiguity: if stop and target are both touched in the same bar, stop is scored first
-- Baseline friction: 0.50 NQ points round-trip (one tick each way); commission excluded
+- **55,260 / 55,260 configurations completed**, as recorded in the final research handover.
+- NQ one-minute OHLCV; primary evaluated period 2023–2025.
+- Current mechanical screen: $300 intended risk, minimum trade counts, and historical drawdown strictly below $2,000, then profit ranking. ORB01 uses a lower-risk exception.
+- Preferred candidates emphasize stability and execution integrity. Evaluation pass rates and payout optimization do not drive the current shortlist.
+- Research #1 is a discovery screen, **not final strategy selection**.
 
-The workflow also runs a 09:30 ET reset variant only as a diagnostic for chart-session/VWAP anchoring differences. The 18:00 ET version is the baseline.
+Start with **[RESEARCH_TRACKER.md](RESEARCH_TRACKER.md)** for the canonical model registry, settings, results, fidelity labels, completed stress findings, decisions, artifact references, and next experiments.
 
-The workflow clones the public `MeNameek/AnooReplay` repository, whose daily JSON files were generated from the Kaggle `Dataset_NQ_1min_2022_2025.csv` source, then writes trade-level and summary outputs to a GitHub Actions artifact.
+The provisional clean shortlist is **ORB09 C047761, ORB05 C013131, and ORB10 C051005**. **ORB04 remains NEEDS-DATA** because one-minute candles cannot resolve its ambiguous first-entry ordering; its original performance is not accepted as validated.
+
+## Active research stack
+
+- [Suite 010 guide](README_NQ_ORB_SUITE_010.md) and [backtest source](nq_orb_research_suite_010.py)
+- [Suite 011 guide](README_NQ_ORB_PARALLEL_SUITE_011.md) and [parallel runner](nq_orb_parallel_suite_011.py)
+- Workflows: [Suite 010](.github/workflows/run_nq_orb_research_suite_010.yml), [Suite 011](.github/workflows/run_nq_orb_parallel_suite_011.yml), [Recovery 012](.github/workflows/run_nq_orb_recovery_012.yml)
+- Configurations: [Suite 010](orb_suite_config.json), [Suite 011](orb_parallel_suite_011_config.json)
+- [Source/fidelity notes](source_notes.json) and [historical Lucid 50K reference](lucid_50k_reference.json)
+
+The next research priorities are ORB04 tick/sub-minute validation and a full execution-integrity and robustness audit. The tracker records later walk-forward, cost, sequence-risk, prop-account, portfolio/hedge, and new-family research.
+
+The repository intentionally keeps the active research surface small. Superseded experiments remain recoverable through Git history.

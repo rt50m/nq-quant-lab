@@ -1,206 +1,270 @@
 # NQ Quant Lab — Research Tracker
 
-This is the canonical status page for the project. Update it whenever a research stage, model audit, stress test, shortlist decision, or execution/data issue changes.
+Canonical project state. Update this file whenever an experiment, audit finding, shortlist, or data requirement changes.
+
+> Research #1 finds promising edges. Research #2+ tries aggressively to kill them.
 
 ## Current stage
 
-**Research #1 — 10-family NQ ORB exhaustive screen**
+**Research #1 — exhaustive 10-family NQ Opening Range Breakout screen: 55,260 / 55,260 configurations completed — PASS.**
 
-- Final exhaustive suite: **55,260 / 55,260 configurations completed — PASS**.
-- Test period: 2023–2025 NQ 1-minute OHLCV.
-- Primary full-grid sizing: **$300 intended risk/trade**.
-- Prop reference: LucidPro 50K, especially the **$2,000 max-loss limit**.
-- Mechanical prop screen: minimum 80 trades, historical max drawdown better than -$2,000, then maximize net profit.
-- ORB01 is the exception because no $300-risk configuration survives the drawdown constraint.
+This is completion of the research grid, not validation of a deployable strategy. Results and completed research findings below are carried forward from the user-approved handover dated **2026-09-04**; the repository cleanup did not rerun backtests or independently reproduce those results.
 
-This is an early screening stage, **not final strategy selection**.
+- Instrument/data: NQ futures, one-minute OHLCV; NQ/MNQ position sizing.
+- Primary evaluated period: 2023–2025, with earlier supporting history for lagged features/training.
+- Sessions: Eastern Time; regular trading session approximately 09:30–16:00.
+- One-minute OHLCV does not reveal event ordering within each candle.
+- 2025 has already been examined and is **not an untouched holdout**.
+- Current clean shortlist: **ORB09 C047761 → ORB05 C013131 → ORB10 C051005**.
+- ORB04 remains **NEEDS-DATA**, outside the clean shortlist.
+
+## Prop selection rules
+
+For this stage, “prop compatible” means passing a historical drawdown screen against the **$2,000 max-loss reference**. It does not establish future account survival or compliance with an EOD trailing account path.
+
+Mechanical selection for Models 2–10:
+
+1. $300 intended risk per trade.
+2. At least 80 trades overall.
+3. Sufficient 2024 trades; the historical selection code used at least 20.
+4. Historical maximum drawdown strictly better than -$2,000.
+5. Maximize net profit among qualifying configurations, subject to execution-integrity exclusions.
+
+ORB01 has no qualifying $300 variant; its recorded exception uses $75 intended risk.
+
+**Do not drive the current shortlist with evaluation pass rates, payout optimization, or funded consistency rules.** Prefer stronger stability and edge quality over a small increase in in-sample profit. Prop-account path simulation and risk-budget optimization come later, after robustness testing.
+
+### Historical suite assumptions
+
+These are research settings, not a fresh verification of current firm terms. Re-verify external LucidPro rules before future decisions that depend on them.
+
+| Setting | Recorded value |
+|---|---:|
+| Starting equity | $50,000 |
+| Profit target | $3,000 |
+| Max-loss limit | $2,000 |
+| Daily loss limit when enabled | $1,200 |
+| EOD trailing loss-floor lock | $50,100 |
+| Maximum position | 4 NQ / 40 MNQ |
+| Primary intended risk | $300/trade |
+| NQ / MNQ point value | $20 / $2 |
+| NQ / MNQ round-trip commission | $3.50 / $1.00 per contract |
+| Round-trip slippage | 0.50 NQ points |
+| Risk grid | $50, $75, $100, $125, $150, $175, $200, $250, $300 |
+
+The simulator sizes NQ where possible, otherwise MNQ. Intended risk is not necessarily identical to realized risk after contract rounding and costs. See [the reference](lucid_50k_reference.json) and suite source.
 
 ## Core reproducibility files
 
-- `nq_orb_research_suite_010.py`
-- `nq_orb_parallel_suite_011.py`
-- `.github/workflows/run_nq_orb_research_suite_010.yml`
-- `.github/workflows/run_nq_orb_parallel_suite_011.yml`
-- `.github/workflows/run_nq_orb_recovery_012.yml`
-- `orb_suite_config.json`
-- `orb_parallel_suite_011_config.json`
-- `source_notes.json`
-- `lucid_50k_reference.json`
-- `README_NQ_ORB_SUITE_010.md`
-- `README_NQ_ORB_PARALLEL_SUITE_011.md`
+| Role | Files |
+|---|---|
+| Backtest and parallel runner | [Suite 010](nq_orb_research_suite_010.py), [Suite 011](nq_orb_parallel_suite_011.py) |
+| Workflows | [Suite 010](.github/workflows/run_nq_orb_research_suite_010.yml), [Suite 011](.github/workflows/run_nq_orb_parallel_suite_011.yml), [Recovery 012](.github/workflows/run_nq_orb_recovery_012.yml) |
+| Configurations | [Suite 010 config](orb_suite_config.json), [Suite 011 config](orb_parallel_suite_011_config.json) |
+| Sources and account reference | [Source/fidelity notes](source_notes.json), [Lucid reference](lucid_50k_reference.json) |
+| Suite documentation | [Suite 010 guide](README_NQ_ORB_SUITE_010.md), [Suite 011 guide](README_NQ_ORB_PARALLEL_SUITE_011.md) |
+| Project entry and state | [README](README.md), this tracker |
 
-Recovery 012 final state: **55,260 / 55,260 PASS**.
+Suite 010 contains the backtest logic. Suite 011 imports it and adds shared preparation, deterministic shards, checkpoints, and aggregation. Recovery 012 completed ORB03 with 6 recovery shards and ORB06 with 20 after original shards exceeded runtime.
 
-## Research #1 — best prop-compatible variants
+The suite guides describe the original implementation and intended audits. The execution findings in this tracker supersede broad historical claims that all same-bar ambiguity or causality issues have been resolved.
 
-| Model | Variant | Risk | Net P&L | PF | Max DD | Execution/data status |
-|---|---|---:|---:|---:|---:|---|
-| ORB01 Modern 5m | `C000786` | $75 | +$5,012 | 1.205 | -$1,439.50 | Clean; no $300 variant survives $2k DD cap |
-| ORB02 Value/Flow proxy | `C002665` | $300 | +$9,738.25 | 1.949 | -$1,613.25 | Clean CLOSE-entry replacement |
-| ORB03 Delayed 25m | `C003740` | $300 | +$14,357 | 1.426 | -$1,902 | Clean |
-| ORB04 Tsai/TORB 1R | `C005940/C005942` | $300 | +$87,776.50* | 2.999* | -$1,111* | **UNRESOLVED — tick/sub-minute data required** |
-| ORB04 Tsai/TORB 1.5R | `C005945` | $300 | +$113,166* | 2.791* | -$1,835.25* | **UNRESOLVED — tick/sub-minute data required** |
-| ORB05 Vol-State | `C013131` | $300 | +$14,893 | 1.617 | -$1,657 | Clean |
-| ORB06 Stat-Threshold | `C021672` | $300 | +$14,965.75 | 1.296 | -$1,807.50 | Clean; CLOSE + LONG-only |
-| ORB07 GAORB | `C027304` | $300 | +$17,114.13 | 1.313 | -$1,928.13 | Clean; thin DD cushion |
-| ORB08 NN Threshold | `C041735` | $300 | +$17,919 | 1.424 | -$1,992 | Clean; ~$8 DD cushion |
-| ORB09 Predicted TR | `C048391` | $300 | +$20,562.50 | 1.508 | -$1,656.25 | Clean; mechanical max-P&L winner |
-| ORB10 Gap-State | `C051005` | $300 | +$10,963 | 1.579 | -$1,470 | Clean |
+### Final run and artifact references
 
-\* ORB04 baseline numbers are **not accepted as validated performance** until intrabar ordering is resolved.
+Use completed recovery outputs, not old partial ORB03/ORB06 artifacts.
 
-## ORB04 execution-integrity finding
+| Purpose | Reference |
+|---|---|
+| Original Suite 011 run | [33754805257](https://github.com/rt50m/nq-quant-lab/actions/runs/33754805257) |
+| Final Recovery 012 run | [33829775573](https://github.com/rt50m/nq-quant-lab/actions/runs/33829775573) |
+| Final recovered artifact | `nq-orb-parallel-suite-011-recovered-final-a1` — ID `9923398832` |
+| ORB06 complete artifact | `recovery012-a1-model-orb06-complete` — ID `9923385731` |
+| ORB03 complete artifact | `recovery012-a1-model-orb03-complete` — ID `9922295286` |
 
-The current TOUCH entry code historically ignored a 1-minute bar that hit both upper and lower entry levels and could take a later clean entry.
+Final outputs include `all_configuration_results_011.csv` (reported 55,260 rows), `model_completion_overview.csv`, `summary_011.md`, `top_10_per_model_011.csv`, and `top_500_011.csv`. Artifact references are recorded provenance; availability and contents were not revalidated during this documentation cleanup.
 
-For the selected 1-minute ORB04 family:
+## Model registry
 
-- **436 / 760 trading days (57.4%)** had ambiguous dual-side first-touch ordering.
-- Worst-case stress rule: first ambiguous bar = forced losing trade, no later entry.
-- 1R stress: **-$58,306**, PF **0.505**, max DD about **-$58.5k**.
-- 1.5R stress: **-$37,449**, PF **0.695**, max DD about **-$37.8k**.
+Fidelity describes the relationship to source research, separately from whether the encoded strategy is executable. ORB02 lacks MBO/aggressive-flow inputs and is an OHLCV proxy. ORB07 exhaustively grids its encoded family instead of using genetic selection. ORB09 uses a HistGradientBoostingRegressor surrogate rather than the source's LSTM architecture.
 
-**Decision: ORB04 = needs-data / unresolved.**
+| Model | Family | Fidelity | Configs |
+|---|---|---|---:|
+| ORB01 | Modern 5m Formed | RECONSTRUCTION | 1,080 |
+| ORB02 | Value Area / Flow | OHLCV_PROXY | 2,160 |
+| ORB03 | Delayed 25m | MECHANISM_RECONSTRUCTION | 2,700 |
+| ORB04 | Tsai / TORB | HIGH conceptual paper fidelity; execution unresolved | 2,700 |
+| ORB05 | Volatility-State | TRANSFER | 6,480 |
+| ORB06 | Statistical Threshold | TRANSFER_RECONSTRUCTION | 9,720 |
+| ORB07 | GAORB Full Grid | TRANSFER_FULL_GRID | 4,500 |
+| ORB08 | Neural Network Threshold | TRANSFER_RECONSTRUCTION | 16,200 |
+| ORB09 | Predicted True Range | TRANSFER_RECONSTRUCTION | 3,240 |
+| ORB10 | NQ Gap-State | NQ_CONDITIONAL_RECONSTRUCTION | 6,480 |
+| **Total** | | | **55,260** |
 
-Resolve the 436 affected dates using tick/sub-minute data before ranking ORB04 as a validated winner.
+### Mechanical prop screen and decisions
 
-## Other execution findings
+All monetary results use $300 intended risk except ORB01 at $75. Annual PF columns are 2023 / 2024 / 2025. “Clean” means no identified blocker in the recorded checks under stated simulation assumptions, not full production validation or exact paper replication.
 
-### ORB02 same-bar confirmation
+**PROMOTE means advance to robustness research only.** HOLD means retain without advancing to the current shortlist. NEEDS-DATA means a material data blocker; NEEDS-RETEST means a new test is required; REJECT means do not advance on current evidence.
 
-Earlier ORB02 TOUCH configurations could enter intrabar and then use the same breakout candle's closing location to accept/reject that entry.
+| Model | Mechanical reference | Preferred if different | Net P&L | PF | Max DD | Annual PF | Execution/data status | Decision |
+|---|---|---|---:|---:|---:|---|---|---|
+| ORB01 | C000786 @ $75 | — | +$5,012 | ~1.21 | -$1,439.50 | Not supplied at $75 | Clean in recorded checks; no $300 qualifier | HOLD |
+| ORB02 | C002514, clean replacement | — | +$9,132.25 | 1.826 | -$1,671.25 | 1.68 / 2.05 / 1.77 | CLOSE, close_loc=0 | HOLD |
+| ORB03 | C003740 | — | +$14,357 | 1.426 | -$1,902 | 1.25 / 1.82 / 1.23 | Clean; thin DD cushion | HOLD |
+| ORB04 1R | C005940 / C005942 | — | +$87,776.50* | 2.999* | -$1,111* | 3.05 / 2.77 / 3.21* | First-touch ordering unresolved | NEEDS-DATA |
+| ORB04 1.5R | C005945 | — | +$113,166* | 2.791* | -$1,835.25* | 2.77 / 2.79 / 2.81* | First-touch ordering unresolved | NEEDS-DATA |
+| ORB05 | C013131 | — | +$14,893 | 1.617 | -$1,657 | 1.45 / 1.78 / 1.72 | Clean in recorded checks | PROMOTE |
+| ORB06 | C021672 | — | +$14,965.75 | 1.296 | -$1,807.50 | 1.24 / 1.35 / 1.32 | CLOSE + LONG-only | HOLD |
+| ORB07 | C027304 | — | +$17,114.13 | 1.313 | -$1,928.13 | 1.38 / 1.34 / 1.17 | Clean; ~$72 DD cushion | HOLD |
+| ORB08 | C040380 | — | +$17,919 | 1.424 | -$1,992 | 1.61 / 1.45 / 1.13 | Clean; ~$8 DD cushion | HOLD |
+| ORB09 | C048391 | **C047761** | +$20,562.50 | 1.508 | -$1,656.25 | 1.90 / 1.32 / 1.21 | Clean CLOSE mechanical winner; preferred stats below | PROMOTE preferred variant |
+| ORB10 | C051005 | — | +$10,963 | 1.579 | -$1,470 | 1.36 / 1.67 / 1.80 | Clean in recorded checks | PROMOTE |
 
-This is an execution/lookahead problem, but **does not require better data**.
+\* **ORB04 baseline performance is optimistic and is not accepted as validated.** It is retained for comparison with a future high-resolution replay.
 
-Current clean mechanical replacement: **`C002665`**, which uses CLOSE confirmation before next-bar execution.
+### Canonical IDs and recorded settings
 
-### Post-entry same-bar TP/SL
+Times below are ET. CLOSE refers to confirmed-close / next-bar execution in the encoded suite.
 
-If the same 1-minute bar touches both stop and target after entry, the simulator assumes **stop first**.
+| Model / variant | ORB | Entry / direction | Stop / target | Exit cap | Filter / condition |
+|---|---|---|---|---|---|
+| ORB01 C000786 | 5m | CLOSE / BOTH | WIDTH_0.5 / 3R | 15:59 | Opening-direction filter |
+| ORB02 C002514 | 35m | CLOSE / BOTH | MID / none | 15:59 | volz=1.0; close_loc=0 |
+| ORB03 C003740 | 25m | TOUCH / LONG | OPPOSITE / 3R | 13:00 | delay=0 |
+| ORB04 C005940 / C005942 | 1m | TOUCH / BOTH | OPPOSITE / 1R | 11:30 / 15:59 | No additional filter |
+| ORB04 C005945 | 1m | TOUCH / BOTH | OPPOSITE / 1.5R | 15:59 | No additional filter |
+| ORB05 C013131 | 30m | TOUCH / BOTH | OPPOSITE / none | 15:59 | vol_lb=10; LOW33 |
+| ORB06 C021672 | 1m statistical structure | CLOSE / LONG | OPPOSITE / 1.5R | 13:00 | stat lookback=20; k=0.25 |
+| ORB07 C027304 | 30m | TOUCH / BOTH | OPPOSITE / 2R | 15:59 | eps_up=0; eps_dn=+1 |
+| ORB08 C040380 | 30m | TOUCH / BOTH | OPPOSITE / 2R | 15:59 | NN=8; alpha=.0001; probability=.50 |
+| ORB09 C048391 mechanical | 30m | CLOSE / BOTH | MID / 3R | 13:00 | HGBR_SHALLOW; q=.67 |
+| ORB09 C047761 preferred | 30m | TOUCH / BOTH | OPPOSITE / 3R | 13:00 | HGBR_SHALLOW; q=.67 |
+| ORB10 C051005 | 15m | TOUCH / BOTH | OPPOSITE / 1.5R | 15:59 | REVERSAL; gap threshold=.005 |
 
-That is intentionally conservative.
+Recorded exact-performance ties do not automatically establish robustness:
 
-### Hard data-granularity blockers
+- ORB03: C003740 / C003965; track C003740.
+- ORB04 1R: C005940 / C005942 differ in time cap; historical trades resolve before either cap. Retain the 1R family and the separate 1.5R variant pending data.
+- ORB05: C013131 / C013671; track C013131.
+- ORB08: C040380 / C040385 / C041730 / C041735; track C040380.
+- ORB09 mechanical: C048391 / C048394; track C048391.
+- **ORB02 correction:** C002514 is the intended clean reference. The earlier tracker used C002665; that entry and its statistics are superseded by this handover.
+- Never replace ORB09's preferred C047761 with C048391 merely because the latter has greater total profit.
 
-Among the currently selected variants, **ORB04 is the only hard data-granularity blocker** found so far.
+### Original research-rank winners
+
+These are historical score winners, not the current prop shortlist. The score was approximately `log(PF) * sqrt(trades) + 0.25 * avg_R * sqrt(trades)`, with minimum-trade constraints.
+
+| Model | Original winner | Net P&L | PF | Max DD |
+|---|---|---:|---:|---:|
+| ORB01 | C000798 | +$29,305 | 1.20 | -$16,843.50 |
+| ORB02 | C001225 | +$6,806.50 | 2.01 | -$757.50 |
+| ORB03 | C003309 | +$18,797 | 1.36 | -$2,979 |
+| ORB04 | C005954 | +$290,146* | 2.77* | -$7,222* |
+| ORB05 | C010259 | +$31,680.75 | 1.50 | -$9,675.50 |
+| ORB06 | C024018 | +$86,609.25 | 1.71 | -$16,386 |
+| ORB07 | C027424 | +$20,373.94 | 1.42 | -$2,387.19 |
+| ORB08 | C035090 | +$29,276 | 1.45 | -$4,694 |
+| ORB09 | C047761 | +$18,823.50 | 1.77 | -$1,339 |
+| ORB10 | C051005 | +$10,963 | 1.58 | -$1,470 |
+
+These figures preserve research history without endorsing execution validity. ORB02 TOUCH/close-location candidates need the exclusion described below; ORB04 figures remain unvalidated.
+
+## Execution and data findings
+
+### ORB04: ambiguous first entry, not merely a skipped day
+
+The TOUCH entry logic detects whether a candle hits the upper and lower entry levels. When both are hit, the historical code skips **that bar** and can take a later clean entry. It does not necessarily skip the whole day.
+
+For the selected 1m ORB04 variants, **436 / 760 trading days (57.4%)** had ambiguous dual-side first-touch ordering. Ignoring that first eligible entry can bias the backtest by substituting a later opportunity.
+
+One-minute OHLC cannot establish which boundary occurred first. Tick/transaction data or sufficiently granular sub-minute data must resolve the actual entry and subsequent stop/target sequence. Finer bars that remain ambiguous will still require better ordering data.
+
+### Completed ORB04 adverse stress
+
+Rule: the first eligible candle touching both entry levels becomes an immediate losing trade, with no later entry that day. Losses use the actual stop, position sizing, commission, and slippage; they are not synthetic fixed -$300 amounts. All 436 affected days replace baseline trades.
+
+| Variant | Baseline net | Baseline PF | Baseline DD | Adverse-stress net | Stress PF | Stress DD |
+|---|---:|---:|---:|---:|---:|---:|
+| 1R | +$87,776.50* | 2.999* | -$1,111* | -$58,305.50 | 0.505 | -$58,522 |
+| 1.5R | +$113,166* | 2.791* | -$1,835.25* | approximately -$37,449 | 0.695 | approximately -$37,780 |
+
+The 1R stress had 760 trades, 38.42% win rate, -0.317 average R, -5.37 Sharpe, and a 9-trade maximum losing streak. About 1/36 months remained profitable. The 1.5R stress had approximately 35.66% win rate, -0.198 average R, -2.82 Sharpe, and a 13-trade maximum losing streak; about 7/36 months remained profitable.
+
+This is a deliberately adverse scenario under the stated assumptions, not a measurement of actual tick execution or proof that ORB04 must lose. Neither the optimistic baseline nor this scenario establishes the true performance.
+
+**Decision: NEEDS-DATA.** The handover reports 436 identified dates; obtain the date-level audit output and high-resolution data for those dates, replay both target families, and reassess. Do not rank ORB04 as validated before this work.
+
+### ORB02: same-candle close-location knowledge
+
+Old candidate **C001345** combines TOUCH entry with `close_loc > 0`, so a full candle's eventual closing location determines whether an earlier intrabar entry counts. That information is unavailable at the touch.
+
+This is an execution/lookahead issue, separate from missing tick data. Current clean reference **C002514** uses CLOSE and `close_loc=0`, disabling the problematic block. Its settings/statistics above supersede the previous C002665 tracker entry. A future causal code fix is a separate research change; this cleanup leaves the backtest logic untouched.
+
+### Other candidates and post-entry ambiguity
+
+The recorded first-trigger audit found zero equivalent dual-side ambiguous days for ORB01 C000786, old ORB02 C001345, ORB03 C003740, ORB05 C013131, ORB07 C027304, ORB08 C040380, ORB09 C047761, and ORB10 C051005. ORB06 C021672 is CLOSE + LONG-only; ORB09 C048391 is CLOSE. Zero first-touch ambiguity does not clear ORB02's separate closing-location flaw.
+
+When an entered trade's candle touches both stop and target, the simulator assumes **stop first**. This conservative exit convention does not fix skipped ambiguous entries.
+
+ORB04 is the only hard first-touch data-granularity blocker identified among the currently selected candidates. A full execution-integrity audit remains necessary for every survivor.
 
 ## Provisional clean shortlist
 
-### 1. ORB09 — preferred robust variant `C047761`
+| Rank | Model / configuration | Trades | Net P&L | PF | Max DD | Annual PF | Avg R | Sharpe |
+|---|---|---:|---:|---:|---:|---|---:|---:|
+| 1 | ORB09 C047761 | 291 | +$18,823.50 | 1.774 | -$1,339 | 1.74 / 1.76 / 1.91 | +0.287 | 3.70 |
+| 2 | ORB05 C013131 | 248 | +$14,893 | 1.617 | -$1,657 | 1.45 / 1.78 / 1.72 | +0.240 | 2.79 |
+| 3 | ORB10 C051005 | 192 | +$10,963 | 1.579 | -$1,470 | 1.36 / 1.67 / 1.80 | +0.239 | 3.36 |
 
-- 291 trades
-- +$18,823.50
-- PF **1.774**
-- Max DD **-$1,339**
-- Yearly PF **1.74 / 1.76 / 1.91**
+ORB09 has 29 profitable / 35 active months and a maximum loss streak of 4. It is preferred over C048391 because yearly PF is more stable, with lower DD and higher PF/Sharpe. ORB05 has a stronger edge per trade than ORB06. ORB10 has improving annual PF and more drawdown cushion than several mechanical competitors.
 
-Preferred over mechanical max-P&L `C048391` because of stronger year-to-year stability.
+ORB06 C021672 records 465 trades, +$14,965.75, PF 1.296, average R +0.117, DD -$1,807.50, and Sharpe 1.88. It earns only about $73 more than ORB05 with almost twice the trades and weaker edge/risk statistics. **It does not displace the clean top three.**
 
-### 2. ORB05 — `C013131`
+The earlier conceptual research board was ORB04* / ORB09 / ORB05. Keep that historical distinction visible, but the actionable research shortlist excludes ORB04. Only ORB04 intentionally retains both 1R and 1.5R target families as a needs-data wildcard.
 
-- 248 trades
-- +$14,893
-- PF **1.617**
-- Max DD **-$1,657**
-- Yearly PF **1.45 / 1.78 / 1.72**
+## Research #2+ queue
 
-### 3. ORB10 — `C051005`
+Work in this order where data availability permits; register each new experiment.
 
-- 192 trades
-- +$10,963
-- PF **1.579**
-- Max DD **-$1,470**
-- Yearly PF **1.36 / 1.67 / 1.80**
+1. **ORB04 high-resolution validation:** recover the 436-date list; obtain sufficient event ordering; reconstruct true entries and exits; rerun 1R and 1.5R; reassess P&L, PF, DD, yearly stability, and shortlist eligibility.
+2. **Execution-integrity audit:** same-bar future knowledge, unavailable high/low/close inputs, next-bar execution, timestamp alignment, session boundaries, gap-through stops, causal features/training, position sizing, commissions, and slippage.
+3. **Parameter-neighbor stability:** opening length, stops, targets, exit times, filters, thresholds, and ML settings. Seek broad stable regions rather than isolated winners.
+4. **Rolling performance and regimes:** 3-, 6-, and 12-month windows, annual/monthly results, high/low volatility, bull/bear conditions, and alternate periods.
+5. **Out-of-sample / walk-forward:** train/test separation, expanding-window selection, and an untouched final holdout. Research #1 selected configurations on already-examined data.
+6. **Outlier dependence:** concentration in the top 1/5/10 trades, best month, and best year.
+7. **Trade-path and Monte Carlo stress:** loss clustering, losing streaks, DD duration, recovery time, sequence risk, DD distributions, and breaches of the $2,000 reference.
+8. **Cost and execution stress:** 0.75 / 1.0 / 1.5+ points round-trip slippage, higher commissions, opening fills, delayed entries, and missed fills.
+9. **Prop-account path simulation, later:** EOD trailing MLL, DLL, start-date effects, risk budgets/scaling, target timing, and payout cycles after robustness is established. Historical rolling-start replay frequencies are not literal future probabilities.
+10. **Portfolio / hedge research:** correlations, simultaneous signals, common loss days, regime diversification, portfolio DD, and shared account limits for surviving models.
+11. **New strategy families:** expand beyond ORB; keep Research #2, #3, and later hypotheses distinct and traceable.
 
-### Wildcard
+## Experiment tracking convention
 
-**ORB04 1R / 1.5R** — potentially exceptional, but excluded from the clean ranking until tick validation.
+Use the following fields for each new research entry. Mark unperformed tests as pending rather than implying completion.
 
-### ORB06 decision
-
-`C021672` does **not** displace ORB09/ORB05/ORB10 on current evidence. It produces similar P&L to ORB05 with almost twice the trades, lower PF, lower average R, weaker Sharpe, and larger drawdown.
-
-## Research fidelity
-
-- ORB01 — reconstruction.
-- ORB02 — OHLCV proxy; exact MBO/aggressive-flow data unavailable.
-- ORB03 — mechanism reconstruction.
-- ORB04 — high-fidelity paper family; current 1m execution unresolved from OHLC.
-- ORB05 — transfer.
-- ORB06 — transfer/reconstruction.
-- ORB07 — transfer/full-grid.
-- ORB08 — transfer/reconstruction.
-- ORB09 — transfer/reconstruction; HGBR surrogate for predicted TR.
-- ORB10 — NQ-conditional reconstruction.
-
-See `source_notes.json` and suite source for exact definitions.
-
-## Next research queue
-
-1. **ORB04 tick validation**
-   - Resolve the 436 ambiguous dates.
-   - Re-run both 1R and 1.5R.
-
-2. **Full execution-integrity audit**
-   - Entry lookahead.
-   - Impossible same-bar knowledge.
-   - Intrabar ambiguity.
-   - Session boundaries.
-   - Causality.
-
-3. **Robustness / overfit**
-   - Parameter-neighbor stability.
-   - Rolling yearly/monthly windows.
-   - Walk-forward / held-out periods.
-   - Regime tests.
-   - Outlier dependence.
-
-4. **Execution stress**
-   - Wider slippage.
-   - Higher commissions.
-   - Entry delay / missed fills.
-   - Gap-through-stop assumptions.
-
-5. **Path / prop risk**
-   - Monte Carlo trade-sequence stress.
-   - Drawdown distributions.
-   - Lucid 50K trailing-MDD simulations.
-   - Funded payout-cycle simulations.
-   - Risk-budget optimization only after robustness is established.
-
-6. **Portfolio research**
-   - Correlations between surviving models.
-   - Simultaneous signals.
-   - Portfolio / hedge construction.
-   - Shared prop drawdown usage.
-
-7. **Research #2+**
-   - Expand beyond these 10 ORB families.
-   - Register every new experiment here.
-
-## Tracking convention
-
-Every new experiment should record:
-
-- Research ID and date.
-- Hypothesis and source.
-- Data and required granularity.
-- Causal/execution assumptions.
-- Search space and config count.
-- Primary ranking criterion.
-- Best result.
-- Robustness result.
-- Prop compatibility.
-- Known limitations.
-- Decision: **promote / hold / reject / needs-data**.
-- Next test.
+| Field | Record |
+|---|---|
+| Identity | Research ID, date, hypothesis, source/paper/inspiration, fidelity |
+| Data | Instrument, dataset/version, evaluated dates, required granularity, session |
+| Method | Causal/execution assumptions, search space, configuration count, selection criterion |
+| Provenance | Code commit, run IDs, artifact IDs/names, result paths |
+| Results | Best raw result, best prop-compatible result, preferred variant and rationale |
+| Validation | Robustness, OOS/walk-forward, cost/slippage stress |
+| Limitations | Known methodological issues, execution assumptions, data blockers |
+| Decision | PROMOTE / HOLD / REJECT / NEEDS-DATA / NEEDS-RETEST |
+| Follow-up | Next test and evidence required to change the decision |
 
 ## Changelog
 
 ### 2026-09-04
 
-- Recovery 012 completed Suite 011: **55,260 / 55,260 PASS**.
-- ORB06 integrated; did not displace the clean shortlist.
-- ORB04 dual-touch ambiguity stress-tested; marked **needs tick data**.
-- ORB02 same-bar confirmation issue identified; clean CLOSE alternative selected.
-- Repository cleanup plan prepared around the current ORB research program.
+- Recovery 012 reported completion of all 55,260 Suite 011 configurations; ORB06 integrated without displacing the clean shortlist.
+- Recorded ORB04's 436/760 ambiguous first-touch days and adverse stress outcomes; retained both target families as NEEDS-DATA.
+- Recorded ORB02's close-location execution issue; corrected canonical clean reference to C002514 per the final handover.
+- Standardized ORB08 tracking on C040380; retained its exact-performance alternatives.
+- Preserved ORB09 C048391 as the mechanical maximum and C047761 as the preferred robustness candidate.
+- Clarified that the current shortlist is driven by drawdown compatibility and edge stability, not pass-rate or payout optimization.
+- Expanded this existing tracker with the full model registry, assumptions, run/artifact provenance, decisions, and future research convention.
+- Consolidated the root README around active ORB research and removed remaining obsolete experiments and redundant root documents; superseded files remain recoverable through Git history. Active ORB Python, workflows, configs, references, and suite guides are preserved.
