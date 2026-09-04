@@ -2,7 +2,28 @@
 
 Research repository for systematic NQ futures strategy discovery, stress testing, and prop-firm-compatible model development.
 
-**Current focus: Research #1 — exhaustive 10-family Opening Range Breakout screen.**
+**Current focus: Research #2 — five ORB and five non-ORB hypotheses, plus a plain-ORB control.**
+
+See [Research #2](research2/README.md) for the 568,296-configuration finite grid,
+paper/fidelity register, execution controls, verification and workflow. Research #2
+uses a separate engine; Research #1 files and recorded results remain unchanged.
+
+## Start Research #2 on GitHub
+
+1. Open **Actions → Research 002 - ORB and non-ORB → Run workflow**.
+2. Select branch **main** and check **Run the entire frozen grid after verification**.
+3. Leave **Optional prior full run ID** blank for the first run, then click **Run workflow**.
+
+GitHub runs verification, 32 search shards (up to eight concurrently), and aggregation.
+No local process or open Codex session is needed. No AI API calls or Codex monitoring
+are part of the workflow. The full search runs only when manually requested.
+When it finishes, share the run link for review. Download the **r2-results** artifact;
+it contains the coverage report, all results and development rankings and expires
+after 90 days. A complete result must report **568,296 / 568,296**, not just a green
+verification job. Failed or partial runs retain checkpoints for 30 days; share the
+failed run link before retrying so recovery can reuse matching checkpoints.
+
+**Research #1 reference:**
 
 - **55,260 / 55,260 configurations completed**, as recorded in the final research handover.
 - NQ one-minute OHLCV; primary evaluated period 2023–2025.
