@@ -1,37 +1,31 @@
-# Research 4 preparation
+# Research 4 — full 31-model development search
 
-Status: **NOT READY FOR FULL BACKTEST**. No Research 4 models have been executed. The first 30 selected designs remain unchanged; model 31 contains ten entry families. See CANDIDATES.md, MODEL31_ENTRIES.md and COVERAGE_CONTRACT.md.
+The implementation is prepared for manual GitHub execution. No full R4 search has been run as part of setup. The 23 local tests, all-family real-data smoke/causality checks, and reduced all-model interruption/resume/aggregation fixture passed. Those checks are not research results or a guarantee of profitable strategies.
 
-The draft grid contains 5,065,092 raw parameter combinations, including 2,716,254 for model 31. These are raw finite products, not unique executable configurations. Semantic duplicates, incompatible settings and unavailable-data cases still need classification. Strategy implementations and execution validation remain pending. Do not treat the grid file or a successful preparation job as a completed engine.
+## Start the full search
 
-## Timestamp issue and current interpretation
+1. Open [Research 004 - 31 models](https://github.com/rt50m/nq-quant-lab/actions/workflows/run_research_004.yml).
+2. Click **Run workflow**, keep branch **main**, and check **Run all 31 models and automatic analysis after verification**.
+3. Leave the previous run ID blank on your first run and click **Run workflow**.
 
-The frozen public mirror was previously interpreted as minute-open timestamps. A full raw-hash audit found no complete 18:00-09:29 overnight window under that interpretation (732 normal study sessions). In representative winter and summer observations, the dataset contains 18:01 as its first evening bar and a 17:00 bar at the maintenance boundary; the cash-open volume increase occurs at 09:31. This is strong evidence for close-stamped bars, but does not establish source semantics by itself.
+GitHub verifies the code/data, runs 64 shards (up to eight concurrently), and produces **r4-results**. The completed report must show **4,399,758 / 4,399,758** configurations. The artifact includes all configuration rows, the best historical-profit and qualifying prop-account variant for each model, annual statistics, and higher-cost diagnostics plus daily paths for finalists. No AI API calls or monitoring are part of this workflow. You can close your laptop after dispatch.
 
-Interpreting timestamps as candle closes produces 649 complete overnight windows and changes the 15-minute opening high or low on 279 development sessions. The raw data and earlier research remain unchanged. No earlier strategy profit has been recomputed or invalidated by this audit alone.
+## Coverage
 
-The [source import script](https://github.com/MeNameek/AnooReplay/blob/2628f7ac1da4e83591391889db426208a2985556/scripts/ingest.js) reads Dataset_NQ_1min_2022_2025.csv and converts ET timestamps to UTC without documenting bar labeling. Merely being divisible by 60 does not prove minute-open labeling.
+There are 5,065,092 raw products in the declared grid and 4,399,758 unique configurations after collapsing 665,334 equivalent cutoff/deadline settings. This includes 2,716,254 model-31 configurations across ten entry families. All compatible declared settings are evaluated; no performance-based early stopping or old benchmark searches are included. This is a finite study, not every conceivable strategy or setting. Candidate designs are in CANDIDATES.md and MODEL31_ENTRIES.md; the executable grid is grid.json.
 
-The original source is now identified: [NQ Futures - 1min Bar 2022 2025](https://www.kaggle.com/datasets/tgtanalytics/nq-futures-1min-bar-2022-2025/data), uploader **tgtanalytics / TGT Analytics - Fernando**, version 1. All 1,048,462 cached mirror timestamp/OHLCV rows match the original CSV exactly. The CSV has 1,048,575 rows; the additional 113 are after the final cached UTC date, starting 2025-12-11 19:00 ET, beyond the research trading window. No unexplained row mismatch was found.
+Some parameter settings produce no trades. Their rows remain visible as NO_TRADES; missing active paths are NEEDS_DATA. A failed prop screen has no qualifying variant. Highest historical profit is a development selection statistic, not an independently validated edge. Higher-cost stress (0.5 and 1 point per side) is finalist-only, not a claim of all-row stress coverage. This release does not estimate evaluation-pass or payout probabilities or claim a pristine holdout.
 
-In the original CSV, all 764 zero-to-positive RTH VWAP initializations occur at 09:31 ET. This reinforces the close-stamp interpretation independently of the mirror's removed VWAP columns. See DATA_PROVENANCE.json for archive/CSV hashes and observed examples. The uploader still does not explicitly declare timestamp labeling, the original market-data vendor or the rollover method.
+## Execution and source details
 
-R4's explicit working policy for this frozen dataset is therefore **empirically inferred close stamps**. Normalize UTC timestamps by subtracting 60 seconds when indexing bar opens, while completed information becomes available at the original raw timestamp. Thus the 09:30-09:45 opening range uses raw-labeled 09:31 through 09:45 candles and is known at 09:45. Do not subtract another minute when ordering signals. Nine preparation/timestamp tests currently pass, including summer/winter offsets and information availability. This addresses the implementation decision without claiming exchange certification. Independent source confirmation remains a documented validation limitation.
+Whole NQ-first/MNQ-fallback sizing, per-contract fees, daily protection, continuous end-of-day trailing account floor and hard 15:59 ET liquidation are modeled. No overnight positions. Resting limits require one-tick trade-through; target-before-fill ambiguity is treated conservatively and prevents a resting-limit prop qualification. Stops and targets are tick-rounded. Unknown minute ordering remains a limitation of OHLCV.
 
-## Optional GitHub preparation audit
+DATA_PROVENANCE.json records the exact Kaggle source, original CSV/archive hashes and the full mirror comparison. R4 uses empirically inferred close-stamped bars: normalized open time is raw UTC minus 60 seconds and observation availability remains raw UTC. All 1,048,462 cached mirror rows match Kaggle version 1 exactly. Original vendor, rollover treatment and explicit uploader labeling remain unverified. R1-R3 code/results and raw timestamps are unchanged.
 
-Open Actions > **Research 004 - preparation audit only** > Run workflow > main > Run workflow. This downloads the same frozen public mirror, verifies raw hashes, checks the 31-model menus and produces `r4-preparation-only` with the coverage audit, normalized RTH/full-overnight arrays and explicit readiness status. It does not backtest any model, rerun an earlier grid or call an AI API. A green check means the audit completed; read `readiness.json`, which currently says NOT_READY_FOR_BACKTEST.
+Operational definitions are documented in IMPLEMENTATION_NOTES.md. These strategies adapt paper methods; they are not replications of proprietary fund systems or proven NQ edges.
 
-The full research workflow and its launch instructions cannot be supplied until the implementations, policy deduplication, execution tests, checkpoint recovery and aggregation checks are complete. The preparation workflow has no custom timeout; platform job limits still apply. This small audit can be rerun, but the unimplemented full search has no checkpoint guarantees yet.
+## Recovery
 
-## Local reproduction
+Each shard saves partial groups atomically and uploads checkpoints after each of six 40-minute compute windows. Code, data, shard assignment and exact configuration identity must match on resume. If a run stops incomplete, launch the same workflow on the same code and paste its numeric run ID into **Optional previous Research 004 run ID with matching code and data**. Completed groups are reused. Do not select different code when resuming.
 
-From the repository root, install research3/requirements.txt, then run:
-
-```text
-python -m unittest discover -s research4 -p 'test_*.py' -v
-python research3/run.py download --out data_r4
-python research4/prepare.py --data data_r4 --out preparation_r4
-```
-
-The preparation report preserves original data hashes and reports the two timing interpretations separately. The normalized output explicitly records the close-stamp inference. It never fills missing observations or replaces the approved overnight models to manufacture complete coverage.
+Runner or upload failures can lose work since the last successful artifact upload; zero loss under every interruption is not guaranteed. The search job has a 350-minute ceiling to leave upload time before GitHub's runner limit. Final results retain for 90 days; checkpoints retain for 30. Download before expiration. The earlier preparation-only workflow is not the full search.

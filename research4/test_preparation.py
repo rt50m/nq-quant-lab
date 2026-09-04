@@ -1,5 +1,6 @@
 import math
 import unittest
+from unittest.mock import patch
 from registry import grid, configs, require_execution_ready
 
 
@@ -33,8 +34,9 @@ class PreparationTests(unittest.TestCase):
                             self.assertTrue(math.isfinite(value),name)
 
     def test_pending_implementations_cannot_be_reported_ready(self):
-        with self.assertRaisesRegex(RuntimeError,'Full research disabled'):
-            require_execution_ready()
+        with patch('registry.grid',return_value={'models':[{'id':'unimplemented','implementation':'PENDING'}]}):
+            with self.assertRaisesRegex(RuntimeError,'Full research disabled'):
+                require_execution_ready()
 
     def test_streaming_products_preserve_each_risk_choice(self):
         model={'id':'fixture','blocks':[{'risk':[50,100],'stop':[1,2]}]}

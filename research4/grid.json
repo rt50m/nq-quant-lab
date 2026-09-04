@@ -23,8 +23,8 @@
     "scope": "Trading risk controls only; no evaluation pass/payout or funded LucidScale claims"
   },
   "minimum_event_days": 80,
-  "version": "R4-draft-1",
-  "status": "PREPARATION_ONLY",
+  "version": "R4-v1",
+  "status": "IMPLEMENTED_DEVELOPMENT_STUDY",
   "models": [
     {
       "id": "R4-01",
@@ -79,7 +79,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -136,7 +136,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": true
     },
     {
@@ -188,7 +188,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -244,7 +244,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -301,7 +301,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -365,7 +365,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -422,7 +422,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -487,7 +487,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -551,7 +551,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -612,7 +612,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -674,7 +674,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -735,7 +735,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -792,7 +792,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -849,7 +849,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": true
     },
     {
@@ -911,7 +911,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -972,7 +972,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1026,7 +1026,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1088,7 +1088,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1146,7 +1146,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1210,7 +1210,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1278,7 +1278,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1346,7 +1346,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1422,7 +1422,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1490,7 +1490,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1556,7 +1556,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1624,7 +1624,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1692,7 +1692,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1756,7 +1756,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1816,7 +1816,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -1880,7 +1880,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     },
     {
@@ -2738,7 +2738,7 @@
           ]
         }
       ],
-      "implementation": "PENDING",
+      "implementation": "IMPLEMENTED",
       "requires_overnight": false
     }
   ],

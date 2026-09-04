@@ -11,16 +11,16 @@ def prepare(data, out):
     manifest=preparation_manifest(out)
     quality=audit(data,out)
     normalize_data(data,out/'normalized')
-    report={'status':'NOT_READY_FOR_BACKTEST','models':manifest['model_count'],
+    report={'status':'PREPARATION_ONLY_USE_FULL_WORKFLOW','models':manifest['model_count'],
             'raw_combinations':manifest['raw_combinations'],'completed_backtests':0,
-            'blockers':['31 model implementations and execution-policy validation remain pending',
-                        'Executable duplicate registry and runtime estimate remain pending'],
+            'blockers':['This audit does not execute the full search or certify its results',
+                        'Use the full workflow verification and executable manifest'],
             'timestamp_policy':'Close-stamped, empirically inferred from original CSV; uploader has not explicitly confirmed',
             'grid_hash':manifest['grid_hash'],'data_hash':quality['data_hash']}
     atomic_json(out/'readiness.json',report)
     summary=f'''# Research 004 preparation only
 
-**NOT READY FOR BACKTEST. No strategy search was run.**
+**Preparation audit only. Use run_research_004.yml for the full search. No strategy search was run by this audit.**
 
 - Selected models: {report['models']} (model 31 has ten entry families).
 - Draft raw parameter products: {report['raw_combinations']:,}; not deduplicated executable counts.
@@ -32,7 +32,7 @@ def prepare(data, out):
 
 The original Kaggle CSV has now been compared against every cached mirror row: all 1,048,462 timestamp/OHLCV rows match exactly. Its 764 RTH VWAP initializations all occur at 09:31 ET. R4 now explicitly normalizes this frozen dataset as close-stamped: raw time minus 60 seconds for bar-open indexing, with availability still at the raw timestamp. This is strongly supported empirical inference, not an explicit uploader declaration. Raw data and earlier research remain unchanged.
 
-Normalized RTH and full-overnight feature arrays are included under normalized/. Model implementations, execution validation and semantic deduplication remain pending. A successful preparation job does not certify that the research is executable.
+Normalized RTH and full-overnight feature arrays are included under normalized/. The full implementation and manifest are supplied separately through run_research_004.yml. A successful preparation job does not certify that the research is executable.
 '''
     (out/'summary.md').write_text(summary,encoding='utf-8')
     print(summary)
