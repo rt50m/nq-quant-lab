@@ -6,6 +6,16 @@ Canonical project state. Update this file whenever an experiment, audit finding,
 
 ## Current stage
 
+**Research #2 implementation prepared (2026-09-04):** five ORB and five non-ORB
+mechanism reconstructions plus a plain-ORB control, 568,296 declared configurations.
+See [the Research #2 specification](research2/README.md) and [paper register](research2/SOURCES.md).
+Separate engine includes causal next-bar entries, gap-aware fills, intratrade account
+protection and strict checkpoint coverage. All 19 local tests and the all-family smoke
+run passed. GitHub verification runs automatically on relevant pushes; the full search
+requires a manual workflow start. No full-search results or live-readiness claims yet.
+The 2023-2025 interval remains development data.
+This user-approved new-family study runs alongside the robustness queue below.
+
 **Research #1 — exhaustive 10-family NQ Opening Range Breakout screen: 55,260 / 55,260 configurations completed — PASS.**
 
 This is completion of the research grid, not validation of a deployable strategy. Results and completed research findings below are carried forward from the user-approved handover dated **2026-09-04**; the repository cleanup did not rerun backtests or independently reproduce those results.
