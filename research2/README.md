@@ -1,6 +1,7 @@
 # Research #2 — five ORB and five non-ORB hypotheses
 
-Status: implementation verified locally; GitHub execution pending publication.
+Status: **568,296 / 568,296 configurations completed** in [run 33845113018](https://github.com/rt50m/nq-quant-lab/actions/runs/33845113018).
+See the [completion audit and provisional candidates](RESULTS_2026-09-04.md) before interpreting rankings.
 The frozen grid contains **568,296 configurations** across ten models and one control.
 
 This is a finite, exhaustive development search, with a separate plain-ORB control.
