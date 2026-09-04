@@ -1,0 +1,163 @@
+{
+  "dataset_url": "https://www.kaggle.com/datasets/tgtanalytics/nq-futures-1min-bar-2022-2025/data",
+  "uploader": "tgtanalytics (TGT Analytics - Fernando)",
+  "version": 1,
+  "download_url": "https://www.kaggle.com/api/v1/datasets/download/tgtanalytics/nq-futures-1min-bar-2022-2025?datasetVersionNumber=1",
+  "csv_filename": "Dataset_NQ_1min_2022_2025.csv",
+  "archive_sha256": "8d3f157a422636e5b8dda51cc3a3d9209c50cb53f9b279d3e14b627ce59370dc",
+  "csv_sha256": "1577e60a7feab411e49da7a56c7052a64738cd1757cfd60aa11fd783ff43b60b",
+  "source_rows": 1048575,
+  "source_first_et": "2022-12-26 18:01:00",
+  "source_last_et": "2025-12-11 20:52:00",
+  "mirror_commit": "2628f7ac1da4e83591391889db426208a2985556",
+  "mirror_data_hash": "030293a205b64735ba343837549d43250c72f7dcce1b2219764e8404ee95a5f2",
+  "mirror_rows_compared": 1048462,
+  "exact_timestamp_ohlcv_matches": 1048462,
+  "mismatches": 0,
+  "source_rows_outside_cached_mirror": 113,
+  "outside_rows_et_first": "2025-12-11 19:00:00",
+  "source_rth_vwap_zero_to_positive_transition_times": {
+    "09:31": 764
+  },
+  "examples": [
+    {
+      "timestamp ET": "1/2/2025 9:30",
+      "open": 22264.25,
+      "high": 22269.75,
+      "low": 22257.25,
+      "close": 22259.75,
+      "volume": 892,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 22272.03717
+    },
+    {
+      "timestamp ET": "1/2/2025 9:31",
+      "open": 22259.75,
+      "high": 22262.25,
+      "low": 22232.5,
+      "close": 22253.75,
+      "volume": 4590,
+      "Vwap_RTH": 22249.5,
+      "Vwap_ETH": 22271.36478
+    },
+    {
+      "timestamp ET": "1/2/2025 17:00",
+      "open": 22097.25,
+      "high": 22097.5,
+      "low": 22093.25,
+      "close": 22094.5,
+      "volume": 75,
+      "Vwap_RTH": 22108.98329,
+      "Vwap_ETH": 22145.92134
+    },
+    {
+      "timestamp ET": "1/2/2025 18:01",
+      "open": 22098.75,
+      "high": 22100.75,
+      "low": 22088.25,
+      "close": 22096.5,
+      "volume": 220,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 22095.16667
+    },
+    {
+      "timestamp ET": "6/3/2025 9:30",
+      "open": 22252.0,
+      "high": 22255.75,
+      "low": 22248.0,
+      "close": 22254.75,
+      "volume": 542,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 22191.96981
+    },
+    {
+      "timestamp ET": "6/3/2025 9:31",
+      "open": 22255.5,
+      "high": 22303.75,
+      "low": 22254.25,
+      "close": 22294.75,
+      "volume": 4711,
+      "Vwap_RTH": 22284.25,
+      "Vwap_ETH": 22196.66682
+    },
+    {
+      "timestamp ET": "6/3/2025 17:00",
+      "open": 22397.0,
+      "high": 22398.25,
+      "low": 22395.5,
+      "close": 22396.5,
+      "volume": 103,
+      "Vwap_RTH": 22371.43521,
+      "Vwap_ETH": 22333.8206
+    },
+    {
+      "timestamp ET": "6/3/2025 18:01",
+      "open": 22396.75,
+      "high": 22404.5,
+      "low": 22392.5,
+      "close": 22403.0,
+      "volume": 225,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 22400.0
+    },
+    {
+      "timestamp ET": "12/10/2025 9:30",
+      "open": 25905.75,
+      "high": 25905.75,
+      "low": 25896.0,
+      "close": 25903.75,
+      "volume": 927,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 25933.10764
+    },
+    {
+      "timestamp ET": "12/10/2025 9:31",
+      "open": 25903.75,
+      "high": 25920.25,
+      "low": 25885.5,
+      "close": 25901.0,
+      "volume": 5111,
+      "Vwap_RTH": 25902.25,
+      "Vwap_ETH": 25931.03306
+    },
+    {
+      "timestamp ET": "12/10/2025 17:00",
+      "open": 26059.75,
+      "high": 26060.0,
+      "low": 26057.0,
+      "close": 26057.0,
+      "volume": 132,
+      "Vwap_RTH": 25940.78407,
+      "Vwap_ETH": 25939.77249
+    },
+    {
+      "timestamp ET": "12/10/2025 18:01",
+      "open": 26026.0,
+      "high": 26043.25,
+      "low": 26022.5,
+      "close": 26043.25,
+      "volume": 472,
+      "Vwap_RTH": 0.0,
+      "Vwap_ETH": 26036.33333
+    }
+  ],
+  "timestamp_interpretation": {
+    "inference": "CLOSE_STAMPED",
+    "confidence": "Strong empirical evidence; not explicitly declared by uploader",
+    "normalized_open_timestamp": "raw_timestamp_utc - 60 seconds",
+    "raw_availability_timestamp": "raw_timestamp_utc",
+    "evidence": [
+      "First evening candle labeled 18:01 ET; last maintenance-boundary candle labeled 17:00 ET",
+      "Original CSV RTH VWAP initializes at 09:31 ET, not 09:30 ET",
+      "Cash-open volume expansion appears at 09:31 ET"
+    ],
+    "preserve_raw": true,
+    "independent_feed_or_uploader_confirmation": false
+  },
+  "limitations": [
+    "Kaggle uploader does not identify original exchange vendor/export platform",
+    "Continuous contract roll/back-adjustment method remains unspecified",
+    "OHLCV bars cannot resolve same-minute first-touch ordering",
+    "Source VWAP is diagnostic only; engine must calculate its explicitly defined session VWAP"
+  ]
+}

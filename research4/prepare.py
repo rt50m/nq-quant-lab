@@ -3,17 +3,19 @@ from pathlib import Path
 import argparse
 from registry import preparation_manifest, atomic_json
 from audit_data import audit
+from data import prepare as normalize_data
 
 
 def prepare(data, out):
     out=Path(out)
     manifest=preparation_manifest(out)
     quality=audit(data,out)
+    normalize_data(data,out/'normalized')
     report={'status':'NOT_READY_FOR_BACKTEST','models':manifest['model_count'],
             'raw_combinations':manifest['raw_combinations'],'completed_backtests':0,
-            'blockers':['Timestamp convention is not verified by the data source',
-                        '31 model implementations and execution-policy validation remain pending',
+            'blockers':['31 model implementations and execution-policy validation remain pending',
                         'Executable duplicate registry and runtime estimate remain pending'],
+            'timestamp_policy':'Close-stamped, empirically inferred from original CSV; uploader has not explicitly confirmed',
             'grid_hash':manifest['grid_hash'],'data_hash':quality['data_hash']}
     atomic_json(out/'readiness.json',report)
     summary=f'''# Research 004 preparation only
@@ -28,7 +30,9 @@ def prepare(data, out):
 - Under the alternative close-stamped hypothesis: {quality['if_close_stamped_complete_overnight_sessions']} complete overnight sessions.
 - Sessions whose 15-minute opening extrema differ between conventions: {quality['sessions_with_changed_opening15_extrema']}.
 
-The alternative timestamp interpretation is a diagnostic, not an authorized correction or a performance result. Confirm original feed bar labeling before freezing opening windows. Model implementations, execution validation and semantic deduplication remain pending. A successful preparation job does not certify that the research is executable.
+The original Kaggle CSV has now been compared against every cached mirror row: all 1,048,462 timestamp/OHLCV rows match exactly. Its 764 RTH VWAP initializations all occur at 09:31 ET. R4 now explicitly normalizes this frozen dataset as close-stamped: raw time minus 60 seconds for bar-open indexing, with availability still at the raw timestamp. This is strongly supported empirical inference, not an explicit uploader declaration. Raw data and earlier research remain unchanged.
+
+Normalized RTH and full-overnight feature arrays are included under normalized/. Model implementations, execution validation and semantic deduplication remain pending. A successful preparation job does not certify that the research is executable.
 '''
     (out/'summary.md').write_text(summary,encoding='utf-8')
     print(summary)
