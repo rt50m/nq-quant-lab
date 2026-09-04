@@ -4,6 +4,11 @@ Research repository for systematic NQ futures strategy discovery, stress testing
 
 **Current focus: Research #2 — five ORB and five non-ORB hypotheses, plus a plain-ORB control.**
 
+**Research #2 grid completed: 568,296 / 568,296.** Read the
+[completion audit and provisional candidates](research2/RESULTS_2026-09-04.md).
+The search took 6m 24s; a full 17,760-configuration shard reproduced locally.
+Further validation is required before replacing the Research #1 shortlist.
+
 See [Research #2](research2/README.md) for the 568,296-configuration finite grid,
 paper/fidelity register, execution controls, verification and workflow. Research #2
 uses a separate engine; Research #1 files and recorded results remain unchanged.
