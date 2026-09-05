@@ -55,7 +55,7 @@ def common_r1_state(prepared,r1):
     p=Path(prepared);meta=json.loads((p/'prepared.json').read_text());a=np.load(p/'rth.npy').astype(float)
     dates=np.array(meta['dates']);normal=np.array(meta['normal_session_mask'],dtype=bool);rows=[];allowed=set()
     for d,ds in enumerate(dates):
-        day=pd.Timestamp(ds).date();x=a[d];good=np.isfinite(x).all(axis=1)
+        day=pd.Timestamp(str(ds)).date();x=a[d];good=np.isfinite(x).all(axis=1)
         if not good.all():continue
         if normal[d]:allowed.add(str(day))
         for m in np.where(good)[0]:

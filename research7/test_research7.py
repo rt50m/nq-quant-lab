@@ -22,6 +22,12 @@ class TestR7(unittest.TestCase):
             m=load_spec('r7_test_dataclass_mod',p)
             self.assertEqual(m.X(3).value,3)
 
+
+    def test_numpy_string_timestamp_bridge(self):
+        import pandas as pd
+        ds=np.str_('2023-01-03')
+        self.assertEqual(str(pd.Timestamp(str(ds)).date()), '2023-01-03')
+
     def test_risk_sizing(self):
         t=np.array([[0,1,2,1,1.0,-1.0,10.0,100.0]])
         ok,pv,comm,q,ex=trade_sizing(t,'RISK',125)
