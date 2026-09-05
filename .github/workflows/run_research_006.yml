@@ -1,0 +1,147 @@
+name: Research 006 - High Density Scale Search
+
+on:
+  push:
+    branches: [main]
+    paths: ['research6/**', '.github/workflows/run_research_006.yml']
+  workflow_dispatch:
+    inputs:
+      full_search:
+        description: Run the full 210,600-configuration high-density scale search
+        type: boolean
+        default: true
+      resume_run_id:
+        description: Optional previous R6 run ID with matching code/data
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: research006-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research6/requirements.txt
+      - run: pip install -r research6/requirements.txt
+      - name: Unit tests
+        run: python -m unittest discover -s research6 -p 'test_*.py' -v
+      - name: Download frozen public NQ data without importing older engines
+        run: python research6/data.py download --out data_r6
+      - name: Rebuild the R4 timestamp-audited arrays
+        run: python research4/data.py --data data_r6 --out prepared_r6
+      - name: Add causal previous-close VXN from FRED/CBOE
+        run: python research6/data.py vxn --out prepared_r6
+      - name: Freeze exact R6 manifest
+        run: python research6/run.py manifest --out manifest_r6
+      - name: Real-data all-family smoke
+        run: python research6/run.py smoke --prepared prepared_r6 --out smoke_r6
+      - name: Publish verification summary
+        if: always()
+        run: |
+          if [ -f manifest_r6/manifest_summary.json ]; then cat manifest_r6/manifest_summary.json >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f smoke_r6/summary.md ]; then cat smoke_r6/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r6-prepared
+          path: prepared_r6/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r6-verification
+          path: |
+            smoke_r6/
+            manifest_r6/
+          retention-days: 30
+
+  search:
+    needs: verify
+    if: github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research6/requirements.txt
+      - run: pip install -r research6/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: r6-prepared
+          path: prepared_r6
+      - name: Restore prior matching checkpoint
+        if: inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: r6-shard-${{ matrix.shard }}
+          path: checkpoint
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.resume_run_id }}
+      - name: Run this deterministic shard
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set +e
+          python research6/run.py shard --prepared prepared_r6 --out checkpoint --index ${{ matrix.shard }} --count 16 --seconds 5100
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r6-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Require complete shard
+        run: python -c "import json; s=json.load(open('checkpoint/status.json')); assert s['complete'], 'Partial R6 shard saved; resume this run ID'"
+
+  aggregate:
+    needs: [verify,search]
+    if: always() && needs.verify.result == 'success' && github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r research6/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: r6-prepared
+          path: prepared_r6
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: r6-shard-*
+          path: parts_r6
+      - name: Require exact coverage and rank only profit under the drawdown cap
+        run: python research6/run.py aggregate --prepared prepared_r6 --parts parts_r6 --out results_r6 --count 16
+      - name: Publish final summary
+        if: always()
+        run: if [ -f results_r6/summary.md ]; then cat results_r6/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r6-results
+          path: results_r6/
+          retention-days: 90
+          if-no-files-found: error
