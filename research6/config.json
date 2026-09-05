@@ -1,0 +1,81 @@
+{
+  "version": "R6-v1-high-density-scale-search",
+  "source_commit": "2628f7ac1da4e83591391889db426208a2985556",
+  "development_start": "2023-01-01",
+  "development_end": "2025-12-11",
+  "objective": {
+    "min_net_profit": 50000.0,
+    "max_drawdown": 2000.0,
+    "max_trades_per_day": 12,
+    "hard_flat_rth_index": 389
+  },
+  "costs": {
+    "slippage_per_side_points": 0.25,
+    "nq_round_trip_commission": 3.5,
+    "mnq_round_trip_commission": 1.0,
+    "nq_point_value": 20.0,
+    "mnq_point_value": 2.0,
+    "max_nq": 4,
+    "max_mnq": 40
+  },
+  "execution": {
+    "stop_atr": [
+      0.2,
+      0.35,
+      0.55
+    ],
+    "target_r": [
+      0.0,
+      1.0,
+      1.5,
+      2.5,
+      4.0
+    ],
+    "max_hold_minutes": [
+      15,
+      30,
+      60,
+      120
+    ],
+    "windows": {
+      "EARLY": [
+        5,
+        120
+      ],
+      "CORE": [
+        30,
+        270
+      ],
+      "FULL": [
+        5,
+        360
+      ]
+    },
+    "directions": [
+      0,
+      1,
+      -1
+    ]
+  },
+  "risk_budgets": [
+    50,
+    75,
+    100,
+    125,
+    150,
+    200,
+    250,
+    300,
+    400,
+    500,
+    750,
+    1000,
+    1500,
+    2000
+  ],
+  "external_data": {
+    "vxn_fred_csv": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VXNCLS",
+    "vxn_series": "VXNCLS",
+    "rule": "previous available daily close only"
+  }
+}
