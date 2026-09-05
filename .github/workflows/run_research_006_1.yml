@@ -1,0 +1,145 @@
+name: Research 006.1 - Impulse Continuation Enhancement
+
+on:
+  push:
+    branches: [main]
+    paths: ['research6_1/**', '.github/workflows/run_research_006_1.yml']
+  workflow_dispatch:
+    inputs:
+      full_search:
+        description: Run the full R6.1 enhancement search after baseline/discovery verification
+        type: boolean
+        default: true
+      resume_run_id:
+        description: Optional previous matching R6.1 run ID for shard checkpoints
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: research0061-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research6_1/requirements.txt
+      - run: pip install -r research6_1/requirements.txt
+      - name: Unit tests
+        run: python -m unittest discover -s research6_1 -p 'test_*.py' -v
+      - name: Download frozen public NQ data
+        run: python research6/data.py download --out data_r61
+      - name: Rebuild timestamp-audited arrays
+        run: python research4/data.py --data data_r61 --out prepared_r61
+      - name: Add causal previous-close VXN
+        run: python research6/data.py vxn --out prepared_r61
+      - name: Reproduce and enrich exact R6 impulse baseline
+        run: python research6_1/run.py baseline --prepared prepared_r61 --out baseline_r61
+      - name: Discover filters using 2023 and confirm on 2024 only
+        run: python research6_1/run.py discover --prepared prepared_r61 --out rules_r61
+      - name: Publish verification summary
+        if: always()
+        run: |
+          if [ -f baseline_r61/summary.md ]; then cat baseline_r61/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f rules_r61/summary.md ]; then cat rules_r61/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r61-prepared
+          path: prepared_r61/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r61-baseline
+          path: baseline_r61/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r61-rules
+          path: rules_r61/
+          retention-days: 90
+
+  search:
+    needs: verify
+    if: github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research6_1/requirements.txt
+      - run: pip install -r research6_1/requirements.txt
+      - uses: actions/download-artifact@v4
+        with: {name: r61-prepared, path: prepared_r61}
+      - uses: actions/download-artifact@v4
+        with: {name: r61-rules, path: rules_r61}
+      - name: Restore prior matching checkpoint
+        if: inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: r61-shard-${{ matrix.shard }}
+          path: checkpoint
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.resume_run_id }}
+      - name: Run deterministic enhancement shard
+        env: {PYTHONUNBUFFERED: '1'}
+        run: |
+          set +e
+          python research6_1/run.py shard --prepared prepared_r61 --rules rules_r61/rules.json --out checkpoint --index ${{ matrix.shard }} --count 16 --seconds 5100
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r61-shard-${{ matrix.shard }}
+          path: checkpoint/
+          overwrite: true
+          retention-days: 30
+          if-no-files-found: error
+      - name: Require complete shard
+        run: python -c "import json; s=json.load(open('checkpoint/status.json')); assert s['complete'], 'Partial R6.1 shard saved; rerun with resume_run_id'"
+
+  aggregate:
+    needs: [verify,search]
+    if: always() && needs.verify.result == 'success' && github.event_name == 'workflow_dispatch' && inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r research6_1/requirements.txt
+      - uses: actions/download-artifact@v4
+        with: {name: r61-rules, path: rules_r61}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: r61-shard-*
+          path: parts_r61
+      - name: Aggregate exact rule coverage
+        run: python research6_1/run.py aggregate --parts parts_r61 --rules rules_r61/rules.json --out results_r61 --count 16
+      - name: Publish final summary
+        if: always()
+        run: if [ -f results_r61/summary.md ]; then cat results_r61/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r61-results
+          path: results_r61/
+          retention-days: 90
+          if-no-files-found: error
