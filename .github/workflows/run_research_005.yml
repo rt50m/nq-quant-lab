@@ -1,0 +1,54 @@
+name: Research 005 - Conditional Edge Discovery
+
+on:
+  push:
+    branches: [main]
+    paths: ['research5/**', '.github/workflows/run_research_005.yml']
+  workflow_dispatch:
+    inputs:
+      full_search:
+        description: Run full discovery and extracted-strategy backtest
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: research005-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    if: github.event_name == 'push' || inputs.full_search
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: research5/requirements.txt
+      - run: pip install -r research5/requirements.txt
+      - name: Unit tests
+        run: python -m unittest discover -s research5 -p 'test_*.py' -v
+      - name: Download frozen public NQ data
+        run: python research3/run.py download --out data_r5
+      - name: Rebuild timestamp-audited prepared arrays
+        run: python research4/data.py --data data_r5 --out prepared_r5
+      - name: Discover conditional edges and backtest extracted rules
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: python research5/run.py --prepared prepared_r5 --out results_r5 --top-rules 40
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f results_r5/summary.md ]; then cat results_r5/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r5-results
+          path: results_r5/
+          retention-days: 90
+          if-no-files-found: error
