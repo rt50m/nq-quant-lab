@@ -1,0 +1,151 @@
+{
+  "version": "R6.1-v1-impulse-continuation-enhancement",
+  "development_start": "2023-01-01",
+  "development_end": "2025-12-11",
+  "selection_years": [
+    2023,
+    2024
+  ],
+  "diagnostic_year": 2025,
+  "objective": {
+    "min_net_profit": 50000.0,
+    "max_drawdown": 2000.0,
+    "credible_min_trades": 300,
+    "credible_min_trades_per_year": 60,
+    "max_year_profit_share": 0.6
+  },
+  "baseline": {
+    "signal": {
+      "family": "IMPULSE_CONTINUATION",
+      "lookback": 10,
+      "impulse_atr": 0.08,
+      "volume_z": -99.0
+    },
+    "execution": {
+      "stop_atr": 0.35,
+      "target_r": 4.0,
+      "hold": 120,
+      "window_start": 30,
+      "window_end": 270,
+      "direction": 0,
+      "max_trades": 12,
+      "cooldown": 0
+    },
+    "sizing": {
+      "mode": "FIXED_RISK",
+      "risk_budget": 250.0
+    }
+  },
+  "signal_neighborhood": {
+    "lookback": [
+      5,
+      7,
+      10,
+      12,
+      15
+    ],
+    "impulse_atr": [
+      0.06,
+      0.08,
+      0.1,
+      0.12,
+      0.15,
+      0.18,
+      0.22,
+      0.25
+    ]
+  },
+  "rule_search": {
+    "min_trades_per_selection_year": 60,
+    "top_singles_per_signal": 8,
+    "top_rules": 32,
+    "management_finalists_per_rule": 250
+  },
+  "management": {
+    "stop_atr": [
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.45,
+      0.55
+    ],
+    "target_r": [
+      0.0,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      4.0,
+      6.0
+    ],
+    "hold": [
+      15,
+      30,
+      45,
+      60,
+      90,
+      120,
+      180
+    ],
+    "cooldown": [
+      0,
+      15
+    ],
+    "max_trades": [
+      2,
+      4,
+      6,
+      12
+    ],
+    "be_trigger_r": [
+      0.75,
+      1.0,
+      1.5
+    ],
+    "trail_activate_r": [
+      1.0,
+      1.5
+    ],
+    "trail_distance_r": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "progress_minutes": [
+      15,
+      30
+    ],
+    "progress_mfe_r": [
+      0.25,
+      0.5
+    ]
+  },
+  "sizing": {
+    "risk_budgets": [
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      225,
+      250,
+      275,
+      300,
+      350,
+      400,
+      450,
+      500,
+      600,
+      750,
+      1000,
+      1250,
+      1500,
+      1750,
+      2000
+    ]
+  }
+}
