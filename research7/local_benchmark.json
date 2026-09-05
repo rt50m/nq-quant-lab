@@ -1,0 +1,51 @@
+{
+  "purpose": "Independent GitHub Actions reproduction of the proven local R7 run",
+  "local_result_type_warning": {
+    "oracle": "Uses all 2023-2025 data for ranking; upper bound only, not selection-valid.",
+    "disciplined": "Ranked on 2023+2024 evidence; 2025 is diagnostic."
+  },
+  "expected": {
+    "unique_exact_portfolios": 1596,
+    "scale_passes": 1,
+    "credible_passes": 1,
+    "oracle_best": {
+      "net_profit": 50197.0,
+      "max_drawdown": -1924.5,
+      "trades": 1789,
+      "net_2023": 14082.5,
+      "net_2024": 19654.5,
+      "net_2025": 16460.0,
+      "choice": [
+        20,
+        41,
+        44,
+        66,
+        88,
+        110,
+        132,
+        155,
+        177,
+        198
+      ]
+    },
+    "disciplined_cap_valid_best": {
+      "net_profit": 28245.5,
+      "max_drawdown": -1709.5,
+      "selection_net": 21063.0,
+      "selection_daily_mdd": -944.5,
+      "choice": [
+        18,
+        22,
+        62,
+        66,
+        88,
+        110,
+        132,
+        173,
+        177,
+        214
+      ]
+    }
+  },
+  "tolerance_dollars": 0.01
+}
