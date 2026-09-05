@@ -9,7 +9,20 @@ REPO=ROOT.parent
 
 
 def load_spec(name,path):
-    spec=importlib.util.spec_from_file_location(name,str(path));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
+    spec=importlib.util.spec_from_file_location(name,str(path))
+    if spec is None or spec.loader is None:
+        raise ImportError(f'Cannot load module {name} from {path}')
+    mod=importlib.util.module_from_spec(spec)
+    # Python 3.12 dataclasses resolve annotations through sys.modules during
+    # class decoration. Register the module before executing it, exactly as
+    # the normal import machinery does. Remove a half-imported module on error.
+    sys.modules[name]=mod
+    try:
+        spec.loader.exec_module(mod)
+    except Exception:
+        sys.modules.pop(name,None)
+        raise
+    return mod
 
 
 def load_r6_modules():
